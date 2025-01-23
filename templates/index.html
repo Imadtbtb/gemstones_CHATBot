@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Gemstone Chatbot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #3498db, #9b59b6);
+            color: #fff;
+            font-size: 16px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Container */
+     .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transform: scale(0.7);
+    transition: all 0.8s ease-in-out;
+    height: 750px;  /* Set the height to a fixed value */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;  /* Prevent expansion beyond 750px */
+}
+
+/* Chat History */
+.chat-history {
+    max-height: 500px;  /* Set max height to allow some space for input */
+    overflow-y: auto;   /* Show scroll when content exceeds height */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+/* Chatbox */
+.chatbox {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex-grow: 1;  /* Allows it to take up the remaining space */
+    overflow: hidden;  /* Prevent expansion */
+}
+
+        /* Robot Icon */
+        /* Robot Icon */
+.robot-icon {
+    font-size: 150px; /* Increased size */
+    cursor: pointer;
+    color: #3498db;
+    animation: bounce 1s infinite alternate;
+    transition: all 0.5s ease;
+    position: fixed; /* Keeps it fixed on screen */
+    top: 40%; /* Centers vertically */
+    left: 45%; /* Centers horizontally */
+    transform: translate(-50%, -50%); /* Perfect centering */
+    z-index: 999; /* Ensures it is above other elements */
+}
+
+
+        @keyframes bounce {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-15px);
+            }
+        }
+
+        /* Header */
+        header {
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 3rem;
+            font-weight: 500;
+            color: #2b3a4d;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .goal-description {
+            font-size: 1.2rem;
+            color: #333;
+            font-weight: 400;
+            max-width: 800px;
+            margin: 0 auto 30px auto;
+            line-height: 1.5;
+        }
+
+        /* Chatbox */
+
+
+
+        .chat-message {
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            max-width: 70%;
+        }
+
+        .chat-message.bot {
+            background-color: #1a2b3b;
+            align-self: flex-start;
+        }
+
+        .chat-message.user {
+            background-color: #ffd700;
+            align-self: flex-end;
+        }
+
+        .chat-input {
+            display: flex;
+            width: 100%;
+            gap: 10px;
+        }
+
+        .chat-input input {
+            width: 80%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.6);
+        }
+
+        .chat-input button {
+            padding: 10px;
+            background-color: #2b3a4d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .chat-input button:hover {
+            background-color: #1a2b3b;
+        }
+
+        /* Image Upload */
+        .image-upload {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .upload-label {
+            background-color: #2b3a4d;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .upload-label:hover {
+            background-color: #1a2b3b;
+        }
+
+        #upload {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Robot Icon -->
+    <div class="robot-icon" id="robot-icon">
+        🤖
+    </div>
+
+    <!-- Chatbot Container (Initially Hidden) -->
+    <div class="container" id="chat-container">
+        <header>
+            <h1 class="title">Gemstone Chatbot</h1>
+            <p class="subtitle">Your Personal Guide to Gemstones</p>
+        </header>
+
+        <p class="goal-description">
+            This chatbot is designed to help you learn more about gemstones. Ask questions about various types of gemstones,
+            their properties, uses, and much more. You can also upload images of gemstones for identification, and the chatbot
+            will provide insights based on the image.
+        </p>
+
+        <div class="chatbox">
+            <div class="chat-history" id="chat-history">
+                <div class="chat-message bot">
+                    <p>Hi there! Ask me about gemstones or upload an image to identify.</p>
+                </div>
+            </div>
+
+            <div class="chat-input">
+                <input type="text" id="user-input" placeholder="Ask a question...">
+                <button id="send-btn">Send</button>
+            </div>
+        </div>
+
+        <div class="image-upload">
+            <label for="upload" class="upload-label">Upload Gemstone Image</label>
+            <input type="file" id="upload" accept="image/*">
+        </div>
+    </div>
+
+    <script>
+        // Get DOM elements
+        const robotIcon = document.getElementById("robot-icon");
+        const chatContainer = document.getElementById("chat-container");
+
+        // When robot icon is clicked, transform into the chat container
+        robotIcon.addEventListener("click", () => {
+            chatContainer.style.opacity = "1";
+            chatContainer.style.transform = "scale(1)";
+            robotIcon.style.opacity = "0";
+            robotIcon.style.pointerEvents = "none"; // Disable interaction with the icon
+        });
+
+        // Get other required elements for the chat functionality
+        const userInput = document.getElementById("user-input");
+        const sendBtn = document.getElementById("send-btn");
+        const chatHistory = document.getElementById("chat-history");
+        const uploadInput = document.getElementById("upload");
+
+        // Handle sending messages
+        sendBtn.addEventListener("click", () => {
+            const userMessage = userInput.value.trim();
+
+            if (userMessage) {
+                displayMessage(userMessage, "user");
+                getBotResponse(userMessage);
+                userInput.value = "";
+            }
+        });
+
+        // Function to display message in the chat history
+        function displayMessage(message, sender) {
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add("chat-message", sender);
+            messageDiv.innerHTML = `<p>${message}</p>`;
+            chatHistory.appendChild(messageDiv);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        // Get bot response from AIML (mocked)
+        function getBotResponse(userMessage) {
+            setTimeout(() => {
+                const botMessage = `I am processing your message: ${userMessage}`;
+                displayMessage(botMessage, "bot");
+            }, 1000);
+        }
+
+        // Handle image upload
+        uploadInput.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+
+            if (file) {
+                const formData = new FormData();
+                formData.append("file", file);
+
+                // Replace with real API call to classify image
+                setTimeout(() => {
+                    const botMessage = "I identified the gemstone in your image!";
+                    displayMessage(botMessage, "bot");
+                }, 1500);
+            }
+        });
+    </script>
+</body>
+</html>
