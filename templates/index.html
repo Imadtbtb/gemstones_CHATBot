@@ -16,6 +16,7 @@
         }
 
         body {
+<<<<<<< HEAD
             background: linear-gradient(135deg, #3498db, #9b59b6);
             color: #fff;
             font-size: 16px;
@@ -92,11 +93,28 @@
             100% {
                 transform: translateY(-15px);
             }
+=======
+            background-color: #f7f7f7;
+            color: #333;
+            font-size: 16px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+>>>>>>> 988284b56a3ffeb73d1ec345714b69649e2e852f
         }
 
         /* Header */
         header {
+<<<<<<< HEAD
             margin-bottom: 30px;
+=======
+            text-align: center;
+            margin-bottom: 40px;
+>>>>>>> 988284b56a3ffeb73d1ec345714b69649e2e852f
         }
 
         .title {
@@ -106,6 +124,7 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 10px;
+<<<<<<< HEAD
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
         }
 
@@ -127,6 +146,37 @@
         /* Chatbox */
 
 
+=======
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #555;
+        }
+
+        /* Chatbox */
+        .chatbox {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .chat-history {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+>>>>>>> 988284b56a3ffeb73d1ec345714b69649e2e852f
 
         .chat-message {
             background-color: #f1f1f1;
@@ -137,7 +187,11 @@
         }
 
         .chat-message.bot {
+<<<<<<< HEAD
             background-color: #1a2b3b;
+=======
+            background-color: #ebf5f1;
+>>>>>>> 988284b56a3ffeb73d1ec345714b69649e2e852f
             align-self: flex-start;
         }
 
@@ -158,12 +212,15 @@
             border: 2px solid #ddd;
             border-radius: 5px;
             font-size: 1rem;
+<<<<<<< HEAD
             transition: all 0.3s ease;
         }
 
         .chat-input input:focus {
             border-color: #3498db;
             box-shadow: 0 0 5px rgba(52, 152, 219, 0.6);
+=======
+>>>>>>> 988284b56a3ffeb73d1ec345714b69649e2e852f
         }
 
         .chat-input button {
@@ -207,6 +264,7 @@
     </style>
 </head>
 <body>
+<<<<<<< HEAD
     <!-- Robot Icon -->
     <div class="robot-icon" id="robot-icon">
         🤖
@@ -214,17 +272,23 @@
 
     <!-- Chatbot Container (Initially Hidden) -->
     <div class="container" id="chat-container">
+=======
+    <div class="container">
+>>>>>>> 988284b56a3ffeb73d1ec345714b69649e2e852f
         <header>
             <h1 class="title">Gemstone Chatbot</h1>
             <p class="subtitle">Your Personal Guide to Gemstones</p>
         </header>
 
+<<<<<<< HEAD
         <p class="goal-description">
             This chatbot is designed to help you learn more about gemstones. Ask questions about various types of gemstones,
             their properties, uses, and much more. You can also upload images of gemstones for identification, and the chatbot
             will provide insights based on the image.
         </p>
 
+=======
+>>>>>>> 988284b56a3ffeb73d1ec345714b69649e2e852f
         <div class="chatbox">
             <div class="chat-history" id="chat-history">
                 <div class="chat-message bot">
@@ -246,6 +310,7 @@
 
     <script>
         // Get DOM elements
+<<<<<<< HEAD
         const robotIcon = document.getElementById("robot-icon");
         const chatContainer = document.getElementById("chat-container");
 
@@ -258,6 +323,8 @@
         });
 
         // Get other required elements for the chat functionality
+=======
+>>>>>>> 988284b56a3ffeb73d1ec345714b69649e2e852f
         const userInput = document.getElementById("user-input");
         const sendBtn = document.getElementById("send-btn");
         const chatHistory = document.getElementById("chat-history");
@@ -283,8 +350,14 @@
             chatHistory.scrollTop = chatHistory.scrollHeight;
         }
 
+<<<<<<< HEAD
         // Get bot response from AIML (mocked)
         function getBotResponse(userMessage) {
+=======
+        // Get bot response from AIML
+        function getBotResponse(userMessage) {
+            // Mock response (replace this with real API call)
+>>>>>>> 988284b56a3ffeb73d1ec345714b69649e2e852f
             setTimeout(() => {
                 const botMessage = `I am processing your message: ${userMessage}`;
                 displayMessage(botMessage, "bot");
