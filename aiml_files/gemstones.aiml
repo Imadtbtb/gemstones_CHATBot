@@ -1,0 +1,361 @@
+<aiml version="2.0">
+
+  <!-- Basic Greetings and User Interaction -->
+  <category> <!-- 1 -->
+    <pattern>HELLO</pattern>
+    <template>Hi there! How can I assist you with gemstones today?</template>
+  </category>
+
+  <category> <!-- 2 -->
+    <pattern>HI</pattern>
+    <template>Hello! How can I help you with gemstones today?</template>
+  </category>
+
+  <category> <!-- 3 -->
+    <pattern>HOW ARE YOU?</pattern>
+    <template>I'm great, thank you for asking! How can I help you with gemstones today?</template>
+  </category>
+
+  <category> <!-- 4 -->
+    <pattern>WHAT ARE GEMSTONES?</pattern>
+    <template>Gemstones are natural or synthetic minerals or crystals that are cut, polished, and used in jewelry or as decorative items. They are valued for their beauty and rarity.</template>
+  </category>
+
+  <category> <!-- 5 -->
+    <pattern>WHAT IS A GEMSTONE?</pattern>
+    <template>A gemstone is a piece of mineral that has been cut and polished to be used in jewelry or as a collector's item. They are valued for their color, clarity, rarity, and hardness.</template>
+  </category>
+
+  <!-- Gemstone-Specific Questions -->
+  <category> <!-- 6 -->
+    <pattern>WHAT IS AMETHYST?</pattern>
+    <template>Amethyst is a purple variety of quartz, often considered a symbol of peace and calm. It is commonly used in jewelry and is the birthstone for February.</template>
+  </category>
+
+  <category> <!-- 7 -->
+    <pattern>WHAT IS THE COLOR OF AMETHYST?</pattern>
+    <template>Amethyst is most often a deep purple, though it can range from light lavender to dark violet.</template>
+  </category>
+
+  <category> <!-- 8 -->
+    <pattern>WHAT IS THE BIRTHSTONE FOR FEBRUARY?</pattern>
+    <template>The birthstone for February is amethyst, known for its purple hue and calming properties.</template>
+  </category>
+
+  <category> <!-- 9 -->
+    <pattern>WHERE IS AMETHYST FOUND?</pattern>
+    <template>Amethyst is found in countries like Brazil, Zambia, Uruguay, and Sri Lanka.</template>
+  </category>
+
+  <category> <!-- 10 -->
+    <pattern>WHAT IS A DIAMOND?</pattern>
+    <template>Diamonds are crystalline forms of carbon and are the hardest natural material on Earth. They are often used in engagement rings and other fine jewelry.</template>
+  </category>
+
+  <category> <!-- 11 -->
+    <pattern>WHAT IS THE COLOR OF DIAMONDS?</pattern>
+    <template>Diamonds are typically colorless, but they can also come in various colors, such as yellow, blue, pink, and even green, depending on impurities and structural variations.</template>
+  </category>
+
+  <category> <!-- 12 -->
+    <pattern>WHERE ARE DIAMONDS FOUND?</pattern>
+    <template>Diamonds are found in countries like South Africa, Russia, Canada, and Australia.</template>
+  </category>
+
+  <category> <!-- 13 -->
+    <pattern>WHAT IS THE HARDEST GEMSTONE?</pattern>
+    <template>The hardest gemstone is the diamond, which has a hardness of 10 on the Mohs scale.</template>
+  </category>
+
+  <category> <!-- 14 -->
+    <pattern>WHAT IS EMERALD?</pattern>
+    <template>Emerald is a green variety of the mineral beryl and is prized for its rich color. It is often considered the gemstone of rebirth and renewal.</template>
+  </category>
+
+  <category> <!-- 15 -->
+    <pattern>WHAT IS THE COLOR OF EMERALD?</pattern>
+    <template>Emerald is known for its vivid green color, which is caused by the presence of chromium and vanadium.</template>
+  </category>
+
+  <category> <!-- 16 -->
+    <pattern>WHAT IS THE BIRTHSTONE FOR MAY?</pattern>
+    <template>The birthstone for May is emerald, symbolizing growth, renewal, and fertility.</template>
+  </category>
+
+  <category> <!-- 17 -->
+    <pattern>WHERE IS EMERALD FOUND?</pattern>
+    <template>Emeralds are mainly found in Colombia, Brazil, Zambia, and Zimbabwe.</template>
+  </category>
+
+  <category> <!-- 18 -->
+    <pattern>WHAT IS LAPIS LAZULI?</pattern>
+    <template>Lapis Lazuli is a deep blue gemstone known for its striking color and historical significance. It has been used for thousands of years in jewelry and as pigment for art.</template>
+  </category>
+
+  <category> <!-- 19 -->
+    <pattern>WHAT IS THE COLOR OF LAPIS LAZULI?</pattern>
+    <template>Lapis Lazuli is deep blue, sometimes with gold flecks of pyrite, giving it a unique appearance.</template>
+  </category>
+
+  <category> <!-- 20 -->
+    <pattern>WHERE IS LAPIS LAZULI FOUND?</pattern>
+    <template>Lapis Lazuli is primarily found in Afghanistan, though it can also be found in Chile, Russia, and parts of the United States.</template>
+  </category>
+
+  <category> <!-- 21 -->
+    <pattern>WHAT IS OPAL?</pattern>
+    <template>Opal is a mineraloid known for its play of color, where it reflects different hues depending on the angle of light. It comes in a variety of colors and is prized for its beauty.</template>
+  </category>
+
+  <category> <!-- 22 -->
+    <pattern>WHAT IS THE COLOR OF OPAL?</pattern>
+    <template>Opal comes in many colors, from white to black, with flashes of red, blue, green, and yellow within its translucent surface.</template>
+  </category>
+
+  <category> <!-- 23 -->
+    <pattern>WHERE IS OPAL FOUND?</pattern>
+    <template>Opals are mainly found in Australia, but also in Ethiopia, Mexico, and the United States.</template>
+  </category>
+
+  <category> <!-- 24 -->
+    <pattern>WHAT IS A PEARL?</pattern>
+    <template>A pearl is an organic gemstone produced inside mollusks. It is known for its lustrous shine and smooth texture, and it has been valued for thousands of years.</template>
+  </category>
+
+  <category> <!-- 25 -->
+    <pattern>WHAT IS THE COLOR OF PEARL?</pattern>
+    <template>Pearls come in various colors, including white, cream, pink, and black, with their color varying depending on the mollusk species.</template>
+  </category>
+
+  <category> <!-- 26 -->
+    <pattern>WHERE ARE PEARLS FOUND?</pattern>
+    <template>Pearls are primarily found in the oceans of Japan, China, the Philippines, and Australia. They can also be cultivated in freshwater lakes and rivers.</template>
+  </category>
+
+  <category> <!-- 27 -->
+    <pattern>WHAT IS QUARTZ SMOKY?</pattern>
+    <template>Smoky Quartz is a brown to black variety of quartz, known for its unique smoky appearance. It is used in jewelry and is believed to have grounding properties.</template>
+  </category>
+
+  <category> <!-- 28 -->
+    <pattern>WHAT IS THE COLOR OF QUARTZ SMOKY?</pattern>
+    <template>Smoky Quartz typically ranges from light gray to dark brown or black, resembling the color of smoke.</template>
+  </category>
+
+  <category> <!-- 29 -->
+    <pattern>WHERE IS QUARTZ SMOKY FOUND?</pattern>
+    <template>Smoky Quartz is found in various countries, including Brazil, Switzerland, and the United States.</template>
+  </category>
+
+  <category> <!-- 30 -->
+    <pattern>WHAT IS RUBY?</pattern>
+    <template>A ruby is a red variety of corundum, one of the four precious gemstones. It symbolizes passion, energy, and love.</template>
+  </category>
+
+  <category> <!-- 31 -->
+    <pattern>WHAT IS THE COLOR OF RUBY?</pattern>
+    <template>Rubies are known for their vibrant red color, ranging from deep blood-red to lighter shades of red and pink.</template>
+  </category>
+
+  <category> <!-- 32 -->
+    <pattern>WHERE IS RUBY FOUND?</pattern>
+    <template>Rubies are found in Myanmar, Thailand, Sri Lanka, and Madagascar, among other locations.</template>
+  </category>
+
+  <category> <!-- 33 -->
+    <pattern>WHAT IS THE BIRTHSTONE FOR JULY?</pattern>
+    <template>The birthstone for July is the ruby, a gemstone of passion and vitality.</template>
+  </category>
+
+  <category> <!-- 34 -->
+    <pattern>WHAT IS SAPPHIRE YELLOW?</pattern>
+    <template>Yellow Sapphire is a variety of corundum and is known for its vibrant yellow color. It is a symbol of wisdom and prosperity.</template>
+  </category>
+
+  <category> <!-- 35 -->
+    <pattern>WHAT IS THE COLOR OF SAPPHIRE YELLOW?</pattern>
+    <template>Yellow Sapphire has a bright yellow color, ranging from pale yellow to rich golden tones.</template>
+  </category>
+
+  <category> <!-- 36 -->
+    <pattern>WHERE IS YELLOW SAPPHIRE FOUND?</pattern>
+    <template>Yellow Sapphire is primarily found in Sri Lanka, Madagascar, Myanmar, and India.</template>
+  </category>
+
+  <category> <!-- 37 -->
+    <pattern>WHAT IS TOPAZ?</pattern>
+    <template>Topaz is a gemstone that comes in many colors, including blue, yellow, and pink. It is prized for its clarity and brilliance.</template>
+  </category>
+
+  <category> <!-- 38 -->
+    <pattern>WHAT IS THE COLOR OF TOPAZ?</pattern>
+    <template>Topaz comes in various colors, including blue, yellow, pink, and colorless, with blue being the most popular for jewelry.</template>
+  </category>
+
+  <category> <!-- 39 -->
+    <pattern>WHERE IS TOPAZ FOUND?</pattern>
+    <template>Topaz is found in countries such as Brazil, Sri Lanka, Russia, and the United States.</template>
+  </category>
+
+  <category> <!-- 40 -->
+    <pattern>WHAT IS THE RAREST GEMSTONE?</pattern>
+    <template>The rarest gemstone is Painite, a brown to reddish-brown gemstone that was once considered the rarest mineral on Earth.</template>
+  </category>
+
+  <category> <!-- 41 -->
+    <pattern>WHAT IS THE MOST EXPENSIVE GEMSTONE?</pattern>
+    <template>Jadeite is one of the most expensive gemstones, particularly the highly prized Imperial Jade variety.</template>
+  </category>
+
+  <category> <!-- 42 -->
+    <pattern>WHAT IS A BIRTHSTONE?</pattern>
+    <template>A birthstone is a gemstone that is traditionally associated with each month of the year, with each gemstone having unique symbolic meanings.</template>
+  </category>
+
+  <category> <!-- 43 -->
+    <pattern>WHAT IS A GEMSTONE USED FOR?</pattern>
+    <template>Gemstones are mainly used in jewelry, but they are also used for decorative items, healing purposes, and even as collector's pieces.</template>
+  </category>
+
+  <category> <!-- 44 -->
+    <pattern>CAN GEMSTONES HAVE HEALING PROPERTIES?</pattern>
+    <template>Yes, many people believe gemstones have healing properties that can influence emotional, physical, and spiritual well-being.</template>
+  </category>
+
+  <category> <!-- 45 -->
+    <pattern>WHAT IS THE MOST POPULAR GEMSTONE?</pattern>
+    <template>Diamonds are considered the most popular gemstone, particularly for engagement rings, due to their timeless appeal and durability.</template>
+  </category>
+
+  <!-- More questions can follow similarly -->
+  <category> <!-- 46 -->
+    <pattern>WHAT IS THE HARDEST GEMSTONE AFTER DIAMOND?</pattern>
+    <template>The second hardest gemstone after diamond is corundum, which includes sapphires and rubies.</template>
+  </category>
+
+  <category> <!-- 47 -->
+    <pattern>WHAT GEMSTONE IS KNOWN FOR ITS PLAY OF COLOR?</pattern>
+    <template>Opal is known for its unique play of color, where the gemstone displays different hues depending on the angle of light.</template>
+  </category>
+
+  <category> <!-- 48 -->
+    <pattern>WHAT IS THE MOST COMMON USE FOR RUBIES?</pattern>
+    <template>Rubies are most commonly used in high-quality jewelry, especially in engagement rings, earrings, and necklaces.</template>
+  </category>
+
+  <category> <!-- 49 -->
+    <pattern>WHAT IS A TYPICAL COLOR FOR TOPAZ?</pattern>
+    <template>Topaz is usually found in shades of blue, yellow, and pink, with blue being the most commonly used in jewelry.</template>
+  </category>
+
+  <category> <!-- 50 -->
+    <pattern>CAN AMETHYST CHANGE COLOR?</pattern>
+    <template>Amethyst can change color when exposed to heat, turning from purple to yellow or brown, which is known as citrine or heat-treated amethyst.</template>
+  </category>
+
+  <category> <!-- 51 -->
+    <pattern>WHAT GEMSTONE IS ASSOCIATED WITH LOVE?</pattern>
+    <template>Ruby is often associated with love and passion due to its vibrant red color, which symbolizes deep emotional connection.</template>
+  </category>
+
+  <category> <!-- 52 -->
+    <pattern>WHAT IS THE MOST COMMON TYPE OF OPAL?</pattern>
+    <template>The most common type of opal is the precious opal, which displays vibrant colors due to the arrangement of silica spheres within the stone.</template>
+  </category>
+
+  <category> <!-- 53 -->
+    <pattern>IS LAPIS LAZULI A PRECIOUS STONE?</pattern>
+    <template>Yes, lapis lazuli is considered a semi-precious gemstone, prized for its deep blue color and history of use in art and jewelry.</template>
+  </category>
+
+  <category> <!-- 54 -->
+    <pattern>WHAT GEMSTONE IS THE BIRTHSTONE FOR DECEMBER?</pattern>
+    <template>The birthstone for December is turquoise, but blue topaz is also often used as an alternative birthstone for this month.</template>
+  </category>
+
+  <category> <!-- 55 -->
+    <pattern>WHAT DOES THE COLOR OF AMETHYST SYMBOLIZE?</pattern>
+    <template>Amethyst's purple color is often associated with tranquility, peace, and spiritual awareness, making it a popular gemstone for meditation.</template>
+  </category>
+
+  <category> <!-- 56 -->
+    <pattern>WHAT IS A GEMSTONE USED FOR IN LITERATURE?</pattern>
+    <template>In literature, gemstones often symbolize beauty, rarity, wisdom, or wealth. They may represent characters' desires, status, or personal growth.</template>
+  </category>
+
+  <category> <!-- 57 -->
+    <pattern>IS TOPAZ A BIRTHSTONE FOR NOVEMBER?</pattern>
+    <template>Yes, topaz is the birthstone for November, known for its stunning color variations and symbolizing strength and healing.</template>
+  </category>
+
+  <category> <!-- 58 -->
+    <pattern>CAN YOU TELL ME ABOUT THE HISTORY OF DIAMONDS?</pattern>
+    <template>Diamonds have been prized for their brilliance and hardness for centuries. They were first discovered in India and became widely sought after during the Roman Empire for their rarity and beauty.</template>
+  </category>
+
+  <category> <!-- 59 -->
+    <pattern>WHAT GEMSTONE IS USED TO CELEBRATE A 60TH WEDDING ANNIVERSARY?</pattern>
+    <template>The gemstone for a 60th wedding anniversary is diamond, symbolizing everlasting love and commitment.</template>
+  </category>
+
+  <category> <!-- 60 -->
+    <pattern>WHAT IS THE CHEMICAL COMPOSITION OF EMERALD?</pattern>
+    <template>Emerald is composed of beryllium aluminum silicate, with chromium and vanadium giving it its signature green color.</template>
+  </category>
+
+  <category> <!-- 61 -->
+    <pattern>WHAT IS THE RAREST COLOR OF DIAMONDS?</pattern>
+    <template>The rarest color of diamonds is red, which is incredibly valuable and extremely hard to find.</template>
+  </category>
+
+  <category> <!-- 62 -->
+    <pattern>WHAT IS THE SYMBOLISM OF PEARLS?</pattern>
+    <template>Pearls symbolize purity, innocence, and elegance, and have been prized in various cultures as a symbol of wealth and beauty.</template>
+  </category>
+
+  <category> <!-- 63 -->
+    <pattern>WHAT DOES SAPPHIRE REPRESENT?</pattern>
+    <template>Sapphire represents wisdom, loyalty, and nobility. It has been historically associated with kings and queens, often worn as a symbol of power and grace.</template>
+  </category>
+
+  <category> <!-- 64 -->
+    <pattern>IS RUBY THE BIRTHSTONE FOR JULY?</pattern>
+    <template>Yes, ruby is the birthstone for July and symbolizes love, passion, and vitality.</template>
+  </category>
+
+  <category> <!-- 65 -->
+    <pattern>CAN YOU TELL ME ABOUT QUARTZ SMOKY?</pattern>
+    <template>Smoky Quartz is a translucent, brown-to-black variety of quartz, often used in jewelry for its grounding properties. It can range in color from light gray to dark brown.</template>
+  </category>
+
+  <category> <!-- 66 -->
+    <pattern>WHAT GEMSTONE IS KNOWN FOR BEING USED IN MEDIEVAL JEWELRY?</pattern>
+    <template>Lapis Lazuli was often used in medieval jewelry, especially in Europe and the Middle East, because of its rich blue color and historical significance.</template>
+  </category>
+
+  <category> <!-- 67 -->
+    <pattern>WHAT IS THE LARGEST DIAMOND EVER FOUND?</pattern>
+    <template>The largest diamond ever found is the Cullinan Diamond, which weighed 3,106 carats before being cut into smaller stones.</template>
+  </category>
+
+  <category> <!-- 68 -->
+    <pattern>WHAT GEMSTONE IS USED FOR 15TH ANNIVERSARIES?</pattern>
+    <template>The gemstone used to celebrate a 15th wedding anniversary is ruby, which represents love, passion, and fidelity.</template>
+  </category>
+
+  <category> <!-- 69 -->
+    <pattern>WHAT IS THE MOHS HARDNESS OF AMETHYST?</pattern>
+    <template>Amethyst has a Mohs hardness of 7, making it durable enough for jewelry while still requiring care to avoid scratches.</template>
+  </category>
+
+  <category> <!-- 70 -->
+    <pattern>WHAT GEMSTONE SYMBOLIZES WISDOM?</pattern>
+    <template>Sapphire is often associated with wisdom and knowledge. Its deep blue color has historically been linked with intellectual and spiritual insight.</template>
+  </category>
+
+  <category>
+  <pattern>*</pattern>
+  <template>I'm sorry, I didn't quite catch that. Can you ask about gemstones or their properties?</template>
+</category>
+
+</aiml>

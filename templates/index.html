@@ -252,65 +252,77 @@
     </div>
 
     <script>
-        // Get DOM elements
-        const robotIcon = document.getElementById("robot-icon");
-        const chatbox = document.getElementById("chatbox");
-        const userInput = document.getElementById("user-input");
-        const sendBtn = document.getElementById("send-btn");
-        const chatHistory = document.getElementById("chat-history");
-        const fileUpload = document.getElementById("file-upload");
+    // Get DOM elements
+    const robotIcon = document.getElementById("robot-icon");
+    const chatbox = document.getElementById("chatbox");
+    const userInput = document.getElementById("user-input");
+    const sendBtn = document.getElementById("send-btn");
+    const chatHistory = document.getElementById("chat-history");
+    const fileUpload = document.getElementById("file-upload");
 
-        // Display messages in chat
-        function displayMessage(message, sender) {
-            const div = document.createElement("div");
-            div.classList.add("chat-message", sender);
-            div.textContent = message;
-            chatHistory.appendChild(div);
-            chatHistory.scrollTop = chatHistory.scrollHeight; // Scroll to the bottom
+    // Display messages in chat
+    function displayMessage(message, sender) {
+        const div = document.createElement("div");
+        div.classList.add("chat-message", sender);
+        div.textContent = message;
+        chatHistory.appendChild(div);
+        chatHistory.scrollTop = chatHistory.scrollHeight; // Scroll to the bottom
+    }
+
+    // Get bot response from AIML server
+    async function getBotResponse(userMessage) {
+        const response = await fetch('http://127.0.0.1:5000/ask', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: userMessage })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            const botMessage = data.response;
+            displayMessage(botMessage, "bot");
+        } else {
+            displayMessage("Sorry, something went wrong. Please try again.", "bot");
         }
+    }
 
-        // Get bot response from AIML (mocked)
-        function getBotResponse(userMessage) {
-            setTimeout(() => {
-                const botMessage = `I am processing your message: ${userMessage}`;
-                displayMessage(botMessage, "bot");
-            }, 1000);
+    // Handle send button click
+    sendBtn.addEventListener("click", () => {
+        const userMessage = userInput.value.trim();
+        if (userMessage) {
+            displayMessage(userMessage, "user");
+            getBotResponse(userMessage);
+            userInput.value = "";
         }
+    });
 
-        // Handle send button click
-        sendBtn.addEventListener("click", () => {
-            const userMessage = userInput.value.trim();
-            if (userMessage) {
-                displayMessage(userMessage, "user");
-                getBotResponse(userMessage);
-                userInput.value = "";
-            }
-        });
+    // Handle enter key press
+    userInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+            sendBtn.click();
+        }
+    });
 
-        // Handle enter key press
-        userInput.addEventListener("keypress", (e) => {
-            if (e.key === "Enter") {
-                sendBtn.click();
-            }
-        });
+    // Show the chatbox and hide the side description when robot icon is clicked
+    robotIcon.addEventListener("click", () => {
+        chatbox.style.display = 'flex';
+        chatbox.style.opacity = 1;
+        chatbox.style.transform = 'scale(1)';
+        robotIcon.style.display = 'none';
+        document.querySelector('.side-description').style.display = 'none'; // Hide the side description
+    });
 
-        // Show the chatbox and hide the side description when robot icon is clicked
-        robotIcon.addEventListener("click", () => {
-            chatbox.style.display = 'flex';
-            chatbox.style.opacity = 1;
-            chatbox.style.transform = 'scale(1)';
-            robotIcon.style.display = 'none';
-            document.querySelector('.side-description').style.display = 'none'; // Hide the side description
-        });
+    // Handle file upload
+    fileUpload.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            displayMessage(`You uploaded a file: ${file.name}`, "user");
+            // Further processing for file could go here
+        }
+    });
+</script>
 
-        // Handle file upload
-        fileUpload.addEventListener("change", (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                displayMessage(`You uploaded a file: ${file.name}`, "user");
-                // Further processing for file could go here
-            }
-        });
-    </script>
 </body>
 </html>
