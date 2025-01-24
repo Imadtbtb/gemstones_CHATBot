@@ -12,328 +12,274 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Open Sans', sans-serif;
         }
 
         body {
-<<<<<<< HEAD
-            background: linear-gradient(135deg, #3498db, #9b59b6);
-            color: #fff;
+            background: linear-gradient(135deg, #3498db, #9b59b6); /* Retained gradient from HEAD */
+            color: #333; /* Updated text color */
             font-size: 16px;
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
+            flex-direction: row; /* Changed to row to place description on the side */
         }
 
-        /* Container */
-     .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 40px;
-    text-align: center;
-    background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    opacity: 0;
-    transform: scale(0.7);
-    transition: all 0.8s ease-in-out;
-    height: 750px;  /* Set the height to a fixed value */
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;  /* Prevent expansion beyond 750px */
-}
-
-/* Chat History */
-.chat-history {
-    max-height: 500px;  /* Set max height to allow some space for input */
-    overflow-y: auto;   /* Show scroll when content exceeds height */
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
-}
-
-/* Chatbox */
-.chatbox {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
-    padding: 30px;
-    max-width: 600px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    flex-grow: 1;  /* Allows it to take up the remaining space */
-    overflow: hidden;  /* Prevent expansion */
-}
-
         /* Robot Icon */
-        /* Robot Icon */
-.robot-icon {
-    font-size: 150px; /* Increased size */
-    cursor: pointer;
-    color: #3498db;
-    animation: bounce 1s infinite alternate;
-    transition: all 0.5s ease;
-    position: fixed; /* Keeps it fixed on screen */
-    top: 40%; /* Centers vertically */
-    left: 45%; /* Centers horizontally */
-    transform: translate(-50%, -50%); /* Perfect centering */
-    z-index: 999; /* Ensures it is above other elements */
-}
-
+        .robot-icon {
+            font-size: 7rem; /* Made it larger */
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            animation: bounce 1s infinite;
+        }
 
         @keyframes bounce {
-            0% {
+            0%, 20%, 50%, 80%, 100% {
                 transform: translateY(0);
             }
-            100% {
-                transform: translateY(-15px);
+            40% {
+                transform: translateY(-10px);
             }
-=======
-            background-color: #f7f7f7;
-            color: #333;
-            font-size: 16px;
+            60% {
+                transform: translateY(-5px);
+            }
         }
 
-        /* Container */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
->>>>>>> 988284b56a3ffeb73d1ec345714b69649e2e852f
-        }
-
-        /* Header */
-        header {
-<<<<<<< HEAD
-            margin-bottom: 30px;
-=======
-            text-align: center;
-            margin-bottom: 40px;
->>>>>>> 988284b56a3ffeb73d1ec345714b69649e2e852f
-        }
-
-        .title {
-            font-size: 3rem;
-            font-weight: 500;
-            color: #2b3a4d;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-<<<<<<< HEAD
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .subtitle {
-            font-size: 1.5rem;
-            color: #555;
-            margin-bottom: 20px;
-        }
-
-        .goal-description {
-            font-size: 1.2rem;
-            color: #333;
-            font-weight: 400;
-            max-width: 800px;
-            margin: 0 auto 30px auto;
-            line-height: 1.5;
-        }
-
-        /* Chatbox */
-
-
-=======
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            color: #555;
+        /* Chatbox Container */
+        .chatbox-container {
+            display: flex;
+            flex-direction: row; /* Layout is row for the description on the side */
+            align-items: center;
+            justify-content: center;
+            height: 80vh; /* Maintain some space around */
+            width: 80vw;
         }
 
         /* Chatbox */
         .chatbox {
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            max-width: 600px;
-            margin: 0 auto;
+            width: 60%; /* The chatbox takes 60% of the width */
+            height: 100%;
+            padding: 30px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.8s ease-in-out;
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
-            transition: all 0.3s ease-in-out;
+            justify-content: space-between;
         }
 
+        /* Side description */
+        .side-description {
+            width: 30%; /* Side container takes 30% of the width */
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-left: 20px;
+            text-align: left;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 3.5rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: #7f8c8d;
+        }
+
+        /* Chat History */
         .chat-history {
-            max-height: 400px;
-            overflow-y: auto;
-            margin-bottom: 20px;
             width: 100%;
+            height: 100%; /* Full height to take the rest of the space */
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
+            gap: 10px;
+            padding-right: 10px;
+            justify-content: flex-start;
         }
->>>>>>> 988284b56a3ffeb73d1ec345714b69649e2e852f
 
         .chat-message {
             background-color: #f1f1f1;
-            padding: 10px;
-            border-radius: 15px;
-            margin-bottom: 10px;
-            max-width: 70%;
+            padding: 12px 18px;
+            border-radius: 8px;
+            max-width: 80%;
+            font-size: 1rem;
+            word-wrap: break-word;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .chat-message.bot {
-<<<<<<< HEAD
-            background-color: #1a2b3b;
-=======
             background-color: #ebf5f1;
->>>>>>> 988284b56a3ffeb73d1ec345714b69649e2e852f
             align-self: flex-start;
+            border: 1px solid #b2d8d2;
         }
 
         .chat-message.user {
-            background-color: #ffd700;
+            background-color: #3498db;
+            color: #fff;
             align-self: flex-end;
+            border: 1px solid #2980b9;
         }
 
+        /* Chat Input */
         .chat-input {
             display: flex;
+            align-items: center;
             width: 100%;
             gap: 10px;
         }
 
         .chat-input input {
-            width: 80%;
-            padding: 10px;
+            width: 70%; /* Reduced the width to make space for the upload button */
+            padding: 12px;
+            margin-right: 10px;
             border: 2px solid #ddd;
             border-radius: 5px;
             font-size: 1rem;
-<<<<<<< HEAD
             transition: all 0.3s ease;
         }
 
         .chat-input input:focus {
             border-color: #3498db;
             box-shadow: 0 0 5px rgba(52, 152, 219, 0.6);
-=======
->>>>>>> 988284b56a3ffeb73d1ec345714b69649e2e852f
         }
 
         .chat-input button {
-            padding: 10px;
-            background-color: #2b3a4d;
+            padding: 12px 24px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Upload Button */
+        .upload-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            background-color: #2ecc71;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s;
+            font-size: 1rem;
+            transition: all 0.3s ease;
         }
 
-        .chat-input button:hover {
-            background-color: #1a2b3b;
+        .upload-btn:hover {
+            background-color: #27ae60;
         }
 
-        /* Image Upload */
-        .image-upload {
-            display: flex;
-            justify-content: center;
-            margin-top: 30px;
+        .upload-btn i {
+            margin-right: 8px;
         }
 
-        .upload-label {
-            background-color: #2b3a4d;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .upload-label:hover {
-            background-color: #1a2b3b;
-        }
-
-        #upload {
+        /* File Input (hidden) */
+        .file-input {
             display: none;
         }
+
+        .goal-description {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
     </style>
 </head>
 <body>
-<<<<<<< HEAD
     <!-- Robot Icon -->
     <div class="robot-icon" id="robot-icon">
         🤖
     </div>
 
-    <!-- Chatbot Container (Initially Hidden) -->
-    <div class="container" id="chat-container">
-=======
-    <div class="container">
->>>>>>> 988284b56a3ffeb73d1ec345714b69649e2e852f
-        <header>
-            <h1 class="title">Gemstone Chatbot</h1>
+    <!-- Chatbox Container with Side Description -->
+    <div class="chatbox-container">
+        <!-- Side Description -->
+        <div class="side-description">
+            <h2 class="title">Gemstone Chatbot</h2>
             <p class="subtitle">Your Personal Guide to Gemstones</p>
-        </header>
+            <p class="goal-description">
+                This chatbot is designed to help you learn more about gemstones. Ask questions about various types of gemstones,
+                their properties, uses, and much more. You can also upload images of gemstones for identification, and the chatbot
+                will provide insights based on the image.
+            </p>
+        </div>
 
-<<<<<<< HEAD
-        <p class="goal-description">
-            This chatbot is designed to help you learn more about gemstones. Ask questions about various types of gemstones,
-            their properties, uses, and much more. You can also upload images of gemstones for identification, and the chatbot
-            will provide insights based on the image.
-        </p>
-
-=======
->>>>>>> 988284b56a3ffeb73d1ec345714b69649e2e852f
-        <div class="chatbox">
+        <!-- Chatbox -->
+        <div class="chatbox" id="chatbox">
             <div class="chat-history" id="chat-history">
                 <div class="chat-message bot">
-                    <p>Hi there! Ask me about gemstones or upload an image to identify.</p>
+                    Hello! I can help you learn about gemstones. Ask me anything!
                 </div>
             </div>
 
             <div class="chat-input">
-                <input type="text" id="user-input" placeholder="Ask a question...">
+                <input type="text" id="user-input" placeholder="Ask me anything about gemstones...">
                 <button id="send-btn">Send</button>
+                <label for="file-upload" class="upload-btn">
+                    <i>📎</i> Attach
+                    <input type="file" id="file-upload" class="file-input">
+                </label>
             </div>
-        </div>
-
-        <div class="image-upload">
-            <label for="upload" class="upload-label">Upload Gemstone Image</label>
-            <input type="file" id="upload" accept="image/*">
         </div>
     </div>
 
     <script>
         // Get DOM elements
-<<<<<<< HEAD
         const robotIcon = document.getElementById("robot-icon");
-        const chatContainer = document.getElementById("chat-container");
-
-        // When robot icon is clicked, transform into the chat container
-        robotIcon.addEventListener("click", () => {
-            chatContainer.style.opacity = "1";
-            chatContainer.style.transform = "scale(1)";
-            robotIcon.style.opacity = "0";
-            robotIcon.style.pointerEvents = "none"; // Disable interaction with the icon
-        });
-
-        // Get other required elements for the chat functionality
-=======
->>>>>>> 988284b56a3ffeb73d1ec345714b69649e2e852f
+        const chatbox = document.getElementById("chatbox");
         const userInput = document.getElementById("user-input");
         const sendBtn = document.getElementById("send-btn");
         const chatHistory = document.getElementById("chat-history");
-        const uploadInput = document.getElementById("upload");
+        const fileUpload = document.getElementById("file-upload");
 
-        // Handle sending messages
+        // Display messages in chat
+        function displayMessage(message, sender) {
+            const div = document.createElement("div");
+            div.classList.add("chat-message", sender);
+            div.textContent = message;
+            chatHistory.appendChild(div);
+            chatHistory.scrollTop = chatHistory.scrollHeight; // Scroll to the bottom
+        }
+
+        // Get bot response from AIML (mocked)
+        function getBotResponse(userMessage) {
+            setTimeout(() => {
+                const botMessage = `I am processing your message: ${userMessage}`;
+                displayMessage(botMessage, "bot");
+            }, 1000);
+        }
+
+        // Handle send button click
         sendBtn.addEventListener("click", () => {
             const userMessage = userInput.value.trim();
-
             if (userMessage) {
                 displayMessage(userMessage, "user");
                 getBotResponse(userMessage);
@@ -341,42 +287,28 @@
             }
         });
 
-        // Function to display message in the chat history
-        function displayMessage(message, sender) {
-            const messageDiv = document.createElement("div");
-            messageDiv.classList.add("chat-message", sender);
-            messageDiv.innerHTML = `<p>${message}</p>`;
-            chatHistory.appendChild(messageDiv);
-            chatHistory.scrollTop = chatHistory.scrollHeight;
-        }
+        // Handle enter key press
+        userInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                sendBtn.click();
+            }
+        });
 
-<<<<<<< HEAD
-        // Get bot response from AIML (mocked)
-        function getBotResponse(userMessage) {
-=======
-        // Get bot response from AIML
-        function getBotResponse(userMessage) {
-            // Mock response (replace this with real API call)
->>>>>>> 988284b56a3ffeb73d1ec345714b69649e2e852f
-            setTimeout(() => {
-                const botMessage = `I am processing your message: ${userMessage}`;
-                displayMessage(botMessage, "bot");
-            }, 1000);
-        }
+        // Show the chatbox and hide the side description when robot icon is clicked
+        robotIcon.addEventListener("click", () => {
+            chatbox.style.display = 'flex';
+            chatbox.style.opacity = 1;
+            chatbox.style.transform = 'scale(1)';
+            robotIcon.style.display = 'none';
+            document.querySelector('.side-description').style.display = 'none'; // Hide the side description
+        });
 
-        // Handle image upload
-        uploadInput.addEventListener("change", (e) => {
+        // Handle file upload
+        fileUpload.addEventListener("change", (e) => {
             const file = e.target.files[0];
-
             if (file) {
-                const formData = new FormData();
-                formData.append("file", file);
-
-                // Replace with real API call to classify image
-                setTimeout(() => {
-                    const botMessage = "I identified the gemstone in your image!";
-                    displayMessage(botMessage, "bot");
-                }, 1500);
+                displayMessage(`You uploaded a file: ${file.name}`, "user");
+                // Further processing for file could go here
             }
         });
     </script>
