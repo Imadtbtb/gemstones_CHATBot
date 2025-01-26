@@ -148,7 +148,7 @@
         }
 
         .chat-input input {
-            width: 70%; /* Reduced the width to make space for the upload button */
+            width: 60%; /* Adjusted width to accommodate new button */
             padding: 12px;
             margin-right: 10px;
             border: 2px solid #ddd;
@@ -196,6 +196,29 @@
         }
 
         .upload-btn i {
+            margin-right: 8px;
+        }
+
+        /* Voice Recognition Button */
+        .voice-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .voice-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .voice-btn i {
             margin-right: 8px;
         }
 
@@ -247,6 +270,9 @@
                     <i>📎</i> Attach
                     <input type="file" id="file-upload" class="file-input">
                 </label>
+                <button class="voice-btn" id="voice-btn">
+                    <i>🎙️</i> Listen
+                </button>
             </div>
         </div>
     </div>
@@ -259,6 +285,7 @@
     const sendBtn = document.getElementById("send-btn");
     const chatHistory = document.getElementById("chat-history");
     const fileUpload = document.getElementById("file-upload");
+    const voiceBtn = document.getElementById("voice-btn");
 
     // Display messages in chat
     function displayMessage(message, sender) {
@@ -311,18 +338,29 @@
         chatbox.style.opacity = 1;
         chatbox.style.transform = 'scale(1)';
         robotIcon.style.display = 'none';
-        document.querySelector('.side-description').style.display = 'none'; // Hide the side description
+        document.querySelector('.side-description').style.display = 'none'; // Hide description
     });
 
-    // Handle file upload
-    fileUpload.addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            displayMessage(`You uploaded a file: ${file.name}`, "user");
-            // Further processing for file could go here
+    // Handle voice button click (start voice recognition)
+    voiceBtn.addEventListener("click", () => {
+        if (window.SpeechRecognition || window.webkitSpeechRecognition) {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = "en-US";
+            recognition.start();
+
+            recognition.onresult = (event) => {
+                const voiceMessage = event.results[0][0].transcript;
+                displayMessage(voiceMessage, "user");
+                getBotResponse(voiceMessage);
+            };
+
+            recognition.onerror = (event) => {
+                displayMessage("Sorry, I couldn't understand that. Please try again.", "bot");
+            };
+        } else {
+            alert("Voice recognition is not supported in this browser.");
         }
     });
-</script>
-
+    </script>
 </body>
 </html>
