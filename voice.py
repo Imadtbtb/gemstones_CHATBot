@@ -8,15 +8,9 @@ recognizer = sr.Recognizer()
 # Initialize the translator
 translator = Translator()
 
-
 def get_language_choice():
-    # Ask the user to choose the language
-    print("Please select your language:")
-    print("1. English")
-    print("2. French")
-    print("3. Arabic")
-
-    choice = input("Enter 1, 2, or 3: ")
+    # Directly set language to English, French, or Arabic based on user input
+    choice = input("Enter the number corresponding to your language (1 for English, 2 for French, 3 for Arabic): ")
 
     if choice == '1':
         return 'en'

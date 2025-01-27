@@ -8,145 +8,38 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    /* Added styles for recording panel */
-    .microphone {
-      font-size: 60px;
-      color: #2d3436;
-      cursor: pointer;
-      position: relative;
-      transition: transform 0.3s ease, color 0.3s ease;
-    }
-    .microphone.active {
-      color: #e74c3c;
-      transform: scale(1.2);
-    }
+    /* Your existing styles */
+    .microphone { font-size: 60px; color: #2d3436; cursor: pointer; position: relative; transition: transform 0.3s ease, color 0.3s ease; }
+    .microphone.active { color: #e74c3c; transform: scale(1.2); }
+    .microphone.active::before { content: ''; position: absolute; top: -10px; left: -10px; width: 100%; height: 100%; border-radius: 50%; background-color: rgba(231, 76, 60, 0.3); animation: pulsate 1s infinite; }
+    @keyframes pulsate { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
+    .recording-panel { display: none; position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background-color: rgba(0, 0, 0, 0.8); color: white; padding: 20px; border-radius: 10px; width: 300px; text-align: center; font-size: 18px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }
+    .recording-panel.active { display: block; }
+    .recording-indicator { margin-top: 15px; font-size: 30px; color: red; animation: pulsate 1s infinite; }
+    .attachment { font-size: 25px; cursor: pointer; position: relative; transition: transform 0.3s ease; }
+    .attachment:hover { transform: scale(1.1); }
+    .file-input { display: none; }
+    .stop-recording-btn { background-color: #e74c3c; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-left: 55px; margin-top: 20px; display: none; }
+    .stop-recording-btn:hover { background-color: #c0392b; }
+    .dropdown { position: relative; display: inline-block; }
+    .dropdown-content { display: none; position: absolute; right: 0; background-color: #f1f1f1; min-width: 160px; box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2); z-index: 1; }
+    .dropdown-content a { color: black; padding: 12px 16px; text-decoration: none; display: block; }
+    .dropdown-content a:hover { background-color: #ddd; }
+    .dropdown:hover .dropdown-content { display: block; }
 
-    /* Microphone Icon Pulsing Effect */
-    .microphone.active::before {
-      content: '';
-      position: absolute;
-      top: -10px;
-      left: -10px;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background-color: rgba(231, 76, 60, 0.3);
-      animation: pulsate 1s infinite;
-    }
-
-    @keyframes pulsate {
-      0% {
-        transform: scale(1);
-        opacity: 1;
-      }
-      50% {
-        transform: scale(1.3);
-        opacity: 0.5;
-      }
-      100% {
-        transform: scale(1);
-        opacity: 1;
-      }
-    }
-
-    /* Recording Panel Styling */
-    .recording-panel {
-      display: none;
-      position: fixed;
-      bottom: 100px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: rgba(0, 0, 0, 0.8);
-      color: white;
-      padding: 20px;
-      border-radius: 10px;
-      width: 300px;
-      text-align: center;
-      font-size: 18px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-
-    .recording-panel.active {
-      display: block;
-    }
-
-    .recording-indicator {
-      margin-top: 15px;
-      font-size: 30px;
-      color: red;
-      animation: pulsate 1s infinite;
-    }
-
-    /* Attach Button Styling */
-    .attachment {
-      font-size: 25px;
-      cursor: pointer;
-      position: relative;
-      transition: transform 0.3s ease;
-    }
-
-    .attachment:hover {
-      transform: scale(1.1);
-    }
-
-    .file-input {
-      display: none;
-    }
-
-    /* Stop Recording Button Styling */
-    .stop-recording-btn {
-      background-color: #e74c3c;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-      margin-left: 55px;
-      margin-top: 20px;
-      display: none;
-    }
-
-    .stop-recording-btn:hover {
-      background-color: #c0392b;
-    }
-
-    /* Dropdown Menu Styling */
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      right: 0;
-      background-color: #f1f1f1;
-      min-width: 160px;
-      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-      z-index: 1;
-    }
-
-    .dropdown-content a {
-      color: black;
-      padding: 12px 16px;
-      text-decoration: none;
-      display: block;
-    }
-
-    .dropdown-content a:hover {
-      background-color: #ddd;
-    }
-
-    .dropdown:hover .dropdown-content {
-      display: block;
+    /* Added styles for image display in chat */
+    .image-message img {
+      max-width: 80%; /* Reduced image size to make it smaller */
+      height: auto;
+      border-radius: 8px;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
   <!-- Chatbot Icon -->
   <div class="chatbot-icon" id="chatbot-icon">
-    <i class="fas fa-gem" style="font-size: 60px; color: #ffff;"></i> <!-- Diamond Icon -->
+    <i class="fas fa-gem" style="font-size: 60px; color: #ffff;"></i>
   </div>
 
   <!-- Chat App -->
@@ -205,6 +98,14 @@
     <button class="stop-recording-btn" id="stop-recording-btn">Stop Recording</button>
   </div>
 
+  <!-- Prediction Results Section -->
+  <div id="prediction-result" style="display: none; margin-top: 20px;">
+    <h3>Prediction Results:</h3>
+    <ul id="prediction-list">
+      <!-- Predictions will appear here -->
+    </ul>
+  </div>
+
   <script>
     const chatbotIcon = document.getElementById('chatbot-icon');
     const chatApp = document.getElementById('chat-app');
@@ -216,6 +117,8 @@
     const recordingPanel = document.getElementById('recording-panel');
     const stopRecordingBtn = document.getElementById('stop-recording-btn');
     const fileInput = document.getElementById('file-input');
+    const predictionResult = document.getElementById('prediction-result');
+    const predictionList = document.getElementById('prediction-list');
     let isRecording = false;
     let mediaRecorder;
     let audioChunks = [];
@@ -294,13 +197,53 @@
     });
 
     // Handle file input change (user selects a file)
-    fileInput.addEventListener('change', (e) => {
-      const fileName = e.target.files[0]?.name;
-      if (fileName) {
-        const message = `File attached: ${fileName}`;
-        chatMessages.innerHTML += `<div class="message sent">${message}</div>`;
+    fileInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        // Display the image message
+        const fileMessage = `File received: ${file.name}`;
+        chatMessages.innerHTML += `<div class="message received">${fileMessage}</div>`;
+
+        // Create an image display box
+        const imageContainer = document.createElement('div');
+        imageContainer.classList.add('image-message');
+        const image = document.createElement('img');
+        image.src = URL.createObjectURL(file);
+        image.alt = file.name;
+        imageContainer.appendChild(image);
+
+        chatMessages.appendChild(imageContainer);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // Prepare the form data and send the file to the backend for prediction
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await fetch("/predict", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await response.json();
+
+        if (data.predictions) {
+          // Clear previous results in the chat messages
+          let predictionsMessage = "Here are the predictions:\n";
+          for (const [label, percentage] of Object.entries(data.predictions)) {
+            predictionsMessage += `${label}: ${percentage}%\n`;
+          }
+
+          // Append the prediction message to the chat box as a received message from the bot
+          chatMessages.innerHTML += `<div class="message received">${predictionsMessage}</div>`;
+
+          // Scroll to the bottom to show the new message
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        } else {
+          alert('Error in prediction.');
+        }
       }
     });
   </script>
+
 </body>
 </html>
