@@ -1,366 +1,273 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Gemstone Chatbot</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        /* Base Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Open Sans', sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enhanced Chatbot Information</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* Added styles for recording panel */
+    .microphone {
+      font-size: 60px;
+      color: #2d3436;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.3s ease, color 0.3s ease;
+    }
 
-        body {
-            background: linear-gradient(135deg, #3498db, #9b59b6); /* Retained gradient from HEAD */
-            color: #333; /* Updated text color */
-            font-size: 16px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: row; /* Changed to row to place description on the side */
-        }
+    .microphone.active {
+      color: #e74c3c;
+      transform: scale(1.2);
+    }
 
-        /* Robot Icon */
-        .robot-icon {
-            font-size: 7rem; /* Made it larger */
-            cursor: pointer;
-            transition: all 0.3s ease-in-out;
-            animation: bounce 1s infinite;
-        }
+    /* Microphone Icon Pulsing Effect */
+    .microphone.active::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: rgba(231, 76, 60, 0.3);
+      animation: pulsate 1s infinite;
+    }
 
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-10px);
-            }
-            60% {
-                transform: translateY(-5px);
-            }
-        }
+    @keyframes pulsate {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.3);
+        opacity: 0.5;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
 
-        /* Chatbox Container */
-        .chatbox-container {
-            display: flex;
-            flex-direction: row; /* Layout is row for the description on the side */
-            align-items: center;
-            justify-content: center;
-            height: 80vh; /* Maintain some space around */
-            width: 80vw;
-        }
+    /* Recording Panel Styling */
+    .recording-panel {
+      display: none;
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 300px;
+      text-align: center;
+      font-size: 18px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
 
-        /* Chatbox */
-        .chatbox {
-            width: 60%; /* The chatbox takes 60% of the width */
-            height: 100%;
-            padding: 30px;
-            text-align: center;
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 0.8s ease-in-out;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
+    .recording-panel.active {
+      display: block;
+    }
 
-        /* Side description */
-        .side-description {
-            width: 30%; /* Side container takes 30% of the width */
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            margin-left: 20px;
-            text-align: left;
-        }
+    .recording-indicator {
+      margin-top: 15px;
+      font-size: 30px;
+      color: red;
+      animation: pulsate 1s infinite;
+    }
 
-        /* Header */
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+    /* Attach Button Styling */
+    .attachment {
+      font-size: 25px;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.3s ease;
+    }
 
-        .title {
-            font-size: 3.5rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 15px;
-            color: #2c3e50;
-            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
-        }
+    .attachment:hover {
+      transform: scale(1.1);
+    }
 
-        .subtitle {
-            font-size: 1.3rem;
-            color: #7f8c8d;
-        }
+    .file-input {
+      display: none;
+    }
 
-        /* Chat History */
-        .chat-history {
-            width: 100%;
-            height: 100%; /* Full height to take the rest of the space */
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding-right: 10px;
-            justify-content: flex-start;
-        }
+    /* Stop Recording Button Styling */
+    .stop-recording-btn {
+      background-color: #e74c3c;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-left: 55px;
+      margin-top: 20px;
+      display: none;
+    }
 
-        .chat-message {
-            background-color: #f1f1f1;
-            padding: 12px 18px;
-            border-radius: 8px;
-            max-width: 80%;
-            font-size: 1rem;
-            word-wrap: break-word;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .chat-message.bot {
-            background-color: #ebf5f1;
-            align-self: flex-start;
-            border: 1px solid #b2d8d2;
-        }
-
-        .chat-message.user {
-            background-color: #3498db;
-            color: #fff;
-            align-self: flex-end;
-            border: 1px solid #2980b9;
-        }
-
-        /* Chat Input */
-        .chat-input {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            gap: 10px;
-        }
-
-        .chat-input input {
-            width: 60%; /* Adjusted width to accommodate new button */
-            padding: 12px;
-            margin-right: 10px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .chat-input input:focus {
-            border-color: #3498db;
-            box-shadow: 0 0 5px rgba(52, 152, 219, 0.6);
-        }
-
-        .chat-input button {
-            padding: 12px 24px;
-            background-color: #3498db;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .chat-input button:hover {
-            background-color: #2980b9;
-        }
-
-        /* Upload Button */
-        .upload-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px 24px;
-            background-color: #2ecc71;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .upload-btn:hover {
-            background-color: #27ae60;
-        }
-
-        .upload-btn i {
-            margin-right: 8px;
-        }
-
-        /* Voice Recognition Button */
-        .voice-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px 24px;
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .voice-btn:hover {
-            background-color: #c0392b;
-        }
-
-        .voice-btn i {
-            margin-right: 8px;
-        }
-
-        /* File Input (hidden) */
-        .file-input {
-            display: none;
-        }
-
-        .goal-description {
-            font-size: 1.1rem;
-            color: #7f8c8d;
-            line-height: 1.6;
-            font-weight: 400;
-        }
-
-    </style>
+    .stop-recording-btn:hover {
+      background-color: #c0392b;
+    }
+  </style>
 </head>
 <body>
-    <!-- Robot Icon -->
-    <div class="robot-icon" id="robot-icon">
-        🤖
+  <!-- Chatbot Icon -->
+  <div class="chatbot-icon" id="chatbot-icon">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="Chatbot Icon">
+  </div>
+
+  <!-- Chat App -->
+  <div class="chat-app" id="chat-app" style="display: none;">
+    <!-- Header -->
+    <div class="chat-header">
+      <div class="profile">
+        <img src="https://via.placeholder.com/40" alt="User Profile">
+        <div class="info">
+          <h4>John Doe</h4>
+          <p>Online</p>
+        </div>
+      </div>
+      <div class="icons">
+        <i class="fas fa-phone-alt"></i>
+        <i class="fas fa-video"></i>
+        <i class="fas fa-ellipsis-v"></i>
+      </div>
     </div>
 
-    <!-- Chatbox Container with Side Description -->
-    <div class="chatbox-container">
-        <!-- Side Description -->
-        <div class="side-description">
-            <h2 class="title">Gemstone Chatbot</h2>
-            <p class="subtitle">Your Personal Guide to Gemstones</p>
-            <p class="goal-description">
-                This chatbot is designed to help you learn more about gemstones. Ask questions about various types of gemstones,
-                their properties, uses, and much more. You can also upload images of gemstones for identification, and the chatbot
-                will provide insights based on the image.
-            </p>
-        </div>
-
-        <!-- Chatbox -->
-        <div class="chatbox" id="chatbox">
-            <div class="chat-history" id="chat-history">
-                <div class="chat-message bot">
-                    Hello! I can help you learn about gemstones. Ask me anything!
-                </div>
-            </div>
-
-            <div class="chat-input">
-                <input type="text" id="user-input" placeholder="Ask me anything about gemstones...">
-                <button id="send-btn">Send</button>
-                <label for="file-upload" class="upload-btn">
-                    <i>📎</i> Attach
-                    <input type="file" id="file-upload" class="file-input">
-                </label>
-                <button class="voice-btn" id="voice-btn">
-                    <i>🎙️</i> Listen
-                </button>
-            </div>
-        </div>
+    <!-- Messages -->
+    <div class="chat-messages" id="chat-messages">
+      <div class="message received">Hi! How are you?</div>
+      <div class="message sent">I’m good, thanks! How about you?</div>
     </div>
 
-    <script>
-    // Get DOM elements
-    const robotIcon = document.getElementById("robot-icon");
-    const chatbox = document.getElementById("chatbox");
-    const userInput = document.getElementById("user-input");
-    const sendBtn = document.getElementById("send-btn");
-    const chatHistory = document.getElementById("chat-history");
-    const fileUpload = document.getElementById("file-upload");
-    const voiceBtn = document.getElementById("voice-btn");
+    <!-- Chat Input -->
+    <div class="chat-input">
+      <i class="fas fa-paperclip attachment" id="attachment-icon"></i>
+      <input type="text" id="message-input" placeholder="Type a message">
+      <i class="fas fa-microphone microphone" id="microphone-icon"></i>
+      <input type="file" id="file-input" class="file-input">
+    </div>
+  </div>
 
-    // Display messages in chat
-    function displayMessage(message, sender) {
-        const div = document.createElement("div");
-        div.classList.add("chat-message", sender);
-        div.textContent = message;
-        chatHistory.appendChild(div);
-        chatHistory.scrollTop = chatHistory.scrollHeight; // Scroll to the bottom
+  <!-- Chatbot Information Container -->
+  <div class="chatbot-info-container" id="chatbot-info-container">
+    <h2>About My Chatbot</h2>
+    <p>This chatbot is designed to provide information about gemstones and help with basic conversations related to gemology. The bot is capable of performing several tasks:</p>
+    <ul>
+      <li>Identifying different types of gemstones.</li>
+      <li>Providing information on their properties, origins, and uses.</li>
+      <li>Giving recommendations based on user preferences.</li>
+      <li>Chatting about gem-related topics and answering common questions.</li>
+    </ul>
+    <p>It utilizes Natural Language Processing (NLP) and machine learning to offer accurate and engaging responses to users.</p>
+  </div>
+
+  <!-- Enhanced Recording Panel -->
+  <div class="recording-panel" id="recording-panel">
+    <p>Recording your message...</p>
+    <i class="fas fa-microphone recording-indicator"></i>
+    <button class="stop-recording-btn" id="stop-recording-btn">Stop Recording</button>
+  </div>
+
+  <script>
+    const chatbotIcon = document.getElementById('chatbot-icon');
+    const chatApp = document.getElementById('chat-app');
+    const attachmentIcon = document.getElementById('attachment-icon');
+    const microphoneIcon = document.getElementById('microphone-icon');
+    const messageInput = document.getElementById('message-input');
+    const chatMessages = document.getElementById('chat-messages');
+    const chatbotInfoContainer = document.getElementById('chatbot-info-container');
+    const recordingPanel = document.getElementById('recording-panel');
+    const stopRecordingBtn = document.getElementById('stop-recording-btn');
+    const fileInput = document.getElementById('file-input');
+    let isRecording = false;
+    let mediaRecorder;
+    let audioChunks = [];
+
+    // Open chat app when clicking chatbot icon
+    chatbotIcon.addEventListener('click', () => {
+      chatApp.style.display = 'flex';
+      chatbotInfoContainer.style.display = 'none'; // Hide the chatbot info container when chat app is open
+      chatbotIcon.style.display = 'none'; // Optionally hide the chatbot icon when the app is open
+    });
+
+    // Event listener for sending messages
+    messageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && messageInput.value.trim()) {
+        const message = messageInput.value.trim();
+        chatMessages.innerHTML += `<div class="message sent">${message}</div>`;
+        messageInput.value = '';
+      }
+    });
+
+    // Start recording when microphone icon is clicked
+    microphoneIcon.addEventListener('click', async () => {
+      if (!isRecording) {
+        startRecording();
+      }
+    });
+
+    // Stop recording when Stop button is clicked
+    stopRecordingBtn.addEventListener('click', stopRecording);
+
+    // Function to start recording
+    async function startRecording() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+
+        // Record the audio chunks
+        mediaRecorder.ondataavailable = (event) => {
+          audioChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+          const audioUrl = URL.createObjectURL(audioBlob);
+          const audio = new Audio(audioUrl);
+          audio.play();
+        };
+
+        // Start recording
+        mediaRecorder.start();
+        isRecording = true;
+
+        // Update the UI for recording state
+        microphoneIcon.classList.add('active');
+        recordingPanel.classList.add('active');
+        stopRecordingBtn.style.display = 'block'; // Show the Stop Recording button
+      } catch (error) {
+        console.error('Error accessing microphone:', error);
+      }
     }
 
-    // Get bot response from AIML server
-    async function getBotResponse(userMessage) {
-        const response = await fetch('http://127.0.0.1:5000/ask', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ message: userMessage })
-        });
+    // Function to stop recording
+    function stopRecording() {
+      mediaRecorder.stop();
+      isRecording = false;
 
-        if (response.ok) {
-            const data = await response.json();
-            const botMessage = data.response;
-            displayMessage(botMessage, "bot");
-        } else {
-            displayMessage("Sorry, something went wrong. Please try again.", "bot");
-        }
+      // Update the UI for stopping recording
+      microphoneIcon.classList.remove('active');
+      recordingPanel.classList.remove('active');
+      stopRecordingBtn.style.display = 'none'; // Hide the Stop Recording button
     }
 
-    // Handle send button click
-    sendBtn.addEventListener("click", () => {
-        const userMessage = userInput.value.trim();
-        if (userMessage) {
-            displayMessage(userMessage, "user");
-            getBotResponse(userMessage);
-            userInput.value = "";
-        }
+    // Attach file event listener to open file explorer
+    attachmentIcon.addEventListener('click', () => {
+      fileInput.click(); // Trigger the file input on click
     });
 
-    // Handle enter key press
-    userInput.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") {
-            sendBtn.click();
-        }
+    // Handle file input change (user selects a file)
+    fileInput.addEventListener('change', (e) => {
+      const fileName = e.target.files[0]?.name;
+      if (fileName) {
+        const message = `File attached: ${fileName}`;
+        chatMessages.innerHTML += `<div class="message sent">${message}</div>`;
+      }
     });
-
-    // Show the chatbox and hide the side description when robot icon is clicked
-    robotIcon.addEventListener("click", () => {
-        chatbox.style.display = 'flex';
-        chatbox.style.opacity = 1;
-        chatbox.style.transform = 'scale(1)';
-        robotIcon.style.display = 'none';
-        document.querySelector('.side-description').style.display = 'none'; // Hide description
-    });
-
-    // Handle voice button click (start voice recognition)
-    voiceBtn.addEventListener("click", () => {
-        if (window.SpeechRecognition || window.webkitSpeechRecognition) {
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = "en-US";
-            recognition.start();
-
-            recognition.onresult = (event) => {
-                const voiceMessage = event.results[0][0].transcript;
-                displayMessage(voiceMessage, "user");
-                getBotResponse(voiceMessage);
-            };
-
-            recognition.onerror = (event) => {
-                displayMessage("Sorry, I couldn't understand that. Please try again.", "bot");
-            };
-        } else {
-            alert("Voice recognition is not supported in this browser.");
-        }
-    });
-    </script>
+  </script>
 </body>
 </html>
