@@ -16,7 +16,6 @@
       position: relative;
       transition: transform 0.3s ease, color 0.3s ease;
     }
-
     .microphone.active {
       color: #e74c3c;
       transform: scale(1.2);
@@ -111,29 +110,63 @@
     .stop-recording-btn:hover {
       background-color: #c0392b;
     }
+
+    /* Dropdown Menu Styling */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      background-color: #f1f1f1;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+    }
+
+    .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #ddd;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
   </style>
 </head>
 <body>
   <!-- Chatbot Icon -->
   <div class="chatbot-icon" id="chatbot-icon">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="Chatbot Icon">
+    <i class="fas fa-gem" style="font-size: 60px; color: #ffff;"></i> <!-- Diamond Icon -->
   </div>
 
   <!-- Chat App -->
   <div class="chat-app" id="chat-app" style="display: none;">
     <!-- Header -->
     <div class="chat-header">
-      <div class="profile">
-        <img src="https://via.placeholder.com/40" alt="User Profile">
-        <div class="info">
-          <h4>John Doe</h4>
-          <p>Online</p>
-        </div>
+      <div class="info">
+        <h4>Gemstones Bot</h4>
+        <p>Online</p>
       </div>
       <div class="icons">
-        <i class="fas fa-phone-alt"></i>
-        <i class="fas fa-video"></i>
-        <i class="fas fa-ellipsis-v"></i>
+        <!-- Dropdown Menu for Language Selection -->
+        <div class="dropdown">
+          <i class="fas fa-ellipsis-v"></i>
+          <div class="dropdown-content">
+            <a href="#">English</a>
+            <a href="#">Arabic</a>
+            <a href="#">French</a>
+          </div>
+        </div>
       </div>
     </div>
 

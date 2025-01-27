@@ -15,10 +15,11 @@
 
     /* Chat Container */
     .chat-app {
-      background-image: url('static/Default WhatsApp background for people who lost it_ Requested by u_Marvin_der_kuhle_.jpg');
+background-image: url('/static/what.jpg');
+
       background-size: cover;
       background-position: center;
-      width: 400px;
+      width: 900px;
       height: 700px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
       border-radius: 10px;
@@ -124,7 +125,6 @@
       position: fixed;
       bottom: 20px;
       right: 20px;
-      background-color: #25d366;
       width: 60px;
       height: 60px;
       border-radius: 50%;
