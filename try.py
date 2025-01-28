@@ -92,18 +92,25 @@ def get_response_bert(user_input):
     else:
         return "Sorry, I didn't understand that. Can you please ask something else?", 0
 
-# Test with an example input
-user_input = "WHERE IS THE LARGEST Ruby?"
+# Main loop to allow continuous user input
+while True:
+    # Get user input from the console
+    user_input = input("Please ask a question: ")
 
-# Get responses from both methods
-response_tfidf, similarity_tfidf = get_response_tfidf(user_input)
-response_bert, similarity_bert = get_response_bert(user_input)
+    # Exit condition for the loop
+    if user_input.lower() == 'exit':
+        print("Goodbye!")
+        break
 
-# Print both results
-print("Response using TF-IDF: ")
-print(response_tfidf)
-print(f"Similarity: {similarity_tfidf:.2f}%")
+    # Get responses from both methods
+    response_tfidf, similarity_tfidf = get_response_tfidf(user_input)
+    response_bert, similarity_bert = get_response_bert(user_input)
 
-print("\nResponse using BERT: ")
-print(response_bert)
-print(f"Similarity: {similarity_bert:.2f}%")
+    # Print both results
+    print("\nResponse using TF-IDF: ")
+    print(response_tfidf)
+    print(f"Similarity: {similarity_tfidf:.2f}%")
+
+    print("\nResponse using BERT: ")
+    print(response_bert)
+    print(f"Similarity: {similarity_bert:.2f}%")
