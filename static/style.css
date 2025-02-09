@@ -244,3 +244,24 @@ background-image: url('/static/what.jpg');
       border-radius: 8px;
       margin-top: 10px;
     }
+    .game-button {
+  background: linear-gradient(135deg, #25d366, #1DB954);
+  border: none;
+  color: #fff;
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.game-button:hover {
+  background: linear-gradient(135deg, #1DB954, #25d366);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+

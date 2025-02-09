@@ -8,6 +8,26 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
+  <style>
+    /* Style for Reasoning Button */
+    .reasoning-btn {
+      background-color: #4CAF50; /* Green background */
+      color: white; /* White text */
+      border: none; /* Remove border */
+      border-radius: 50%; /* Circular button */
+      width: 45px;
+      height: 45px;
+      font-size: 20px; /* Font size for the icon */
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      margin-left: 10px; /* Space between the microphone icon and reasoning button */
+    }
+    .reasoning-btn:hover {
+      background-color: #45a049; /* Darker green on hover */
+    }
+  </style>
 </head>
 <body>
   <!-- Chatbot Icon -->
@@ -47,6 +67,11 @@
       <i class="fas fa-paperclip attachment" id="attachment-icon"></i>
       <input type="text" id="message-input" placeholder="Type a message">
       <i class="fas fa-microphone microphone" id="microphone-icon"></i>
+      <!-- Reasoning Button -->
+
+      <button class="reasoning-btn" id="reasoning-btn">
+        <i class="fas fa-question"></i> <!-- Question icon for reasoning -->
+      </button>
       <input type="file" id="file-input" class="file-input">
     </div>
   </div>
@@ -62,6 +87,12 @@
       <li>Chatting about gem-related topics and answering common questions.</li>
     </ul>
     <p>It utilizes Natural Language Processing (NLP) and machine learning to offer accurate and engaging responses to users.</p>
+
+    <!-- Game Button to Redirect to game.html -->
+    <a href="{{ url_for('play_game') }}">
+      <button class="game-button">Go to Game</button>
+    </a>
+
   </div>
 
   <!-- Enhanced Recording Panel -->
@@ -79,202 +110,173 @@
     </ul>
   </div>
 
- <script>
-  const chatbotIcon = document.getElementById('chatbot-icon');
-  const chatApp = document.getElementById('chat-app');
-  const attachmentIcon = document.getElementById('attachment-icon');
-  const microphoneIcon = document.getElementById('microphone-icon');
-  const messageInput = document.getElementById('message-input');
-  const chatMessages = document.getElementById('chat-messages');
-  const chatbotInfoContainer = document.getElementById('chatbot-info-container');
-  const recordingPanel = document.getElementById('recording-panel');
-  const stopRecordingBtn = document.getElementById('stop-recording-btn');
-  const fileInput = document.getElementById('file-input');
-  const predictionResult = document.getElementById('prediction-result');
-  const predictionList = document.getElementById('prediction-list');
-  let isRecording = false;
-  let mediaRecorder;
-  let audioChunks = [];
+  <script>
+    const chatbotIcon = document.getElementById('chatbot-icon');
+    const chatApp = document.getElementById('chat-app');
+    const attachmentIcon = document.getElementById('attachment-icon');
+    const microphoneIcon = document.getElementById('microphone-icon');
+    const messageInput = document.getElementById('message-input');
+    const chatMessages = document.getElementById('chat-messages');
+    const chatbotInfoContainer = document.getElementById('chatbot-info-container');
+    const recordingPanel = document.getElementById('recording-panel');
+    const stopRecordingBtn = document.getElementById('stop-recording-btn');
+    const fileInput = document.getElementById('file-input');
+    const predictionResult = document.getElementById('prediction-result');
+    const predictionList = document.getElementById('prediction-list');
+    const reasoningBtn = document.getElementById('reasoning-btn'); // New Reasoning button
+    let isRecording = false;
+    let mediaRecorder;
+    let audioChunks = [];
 
-  // Open chat app when clicking chatbot icon
-  chatbotIcon.addEventListener('click', () => {
-    chatApp.style.display = 'flex';
-    chatbotInfoContainer.style.display = 'none'; // Hide the chatbot info container when chat app is open
-    chatbotIcon.style.display = 'none'; // Optionally hide the chatbot icon when the app is open
-  });
+    // Open chat app when clicking chatbot icon
+    chatbotIcon.addEventListener('click', () => {
+      chatApp.style.display = 'flex';
+      chatbotInfoContainer.style.display = 'none'; // Hide the chatbot info container when chat app is open
+      chatbotIcon.style.display = 'none'; // Optionally hide the chatbot icon when the app is open
+    });
 
-  // Event listener for sending messages
-  messageInput.addEventListener('keypress', async (e) => {
-    if (e.key === 'Enter' && messageInput.value.trim()) {
-      const message = messageInput.value.trim();
-      chatMessages.innerHTML += `<div class="message sent">${message}</div>`;
-      messageInput.value = '';  // Clear the input field
+    // Event listener for sending messages
+    messageInput.addEventListener('keypress', async (e) => {
+      if (e.key === 'Enter' && messageInput.value.trim()) {
+        const message = messageInput.value.trim();
+        chatMessages.innerHTML += `<div class="message sent">${message}</div>`;
+        messageInput.value = '';  // Clear the input field
 
-      // Send message to backend (Flask) for AIML response
-      const response = await fetch('/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ message: message })
-      });
+        // Send message to backend (Flask) for AIML response
+        const response = await fetch('/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ message: message })
+        });
 
-      const data = await response.json();
+        const data = await response.json();
 
-      if (data.response) {
-        // Append the response from the chatbot
-        chatMessages.innerHTML += `<div class="message received">${data.response}</div>`;
-      } else {
-        chatMessages.innerHTML += `<div class="message received">Sorry, there was an error processing your message.</div>`;
-      }
-
-      chatMessages.scrollTop = chatMessages.scrollHeight;  // Scroll to the bottom of the chat
-    }
-  });
-
-  // Start recording when microphone icon is clicked
-  microphoneIcon.addEventListener('click', async () => {
-    if (!isRecording) {
-      startRecording();
-    }
-  });
-
-  // Stop recording when Stop button is clicked
-  stopRecordingBtn.addEventListener('click', stopRecording);
-
-  // Function to start recording
-  async function startRecording() {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorder = new MediaRecorder(stream);
-
-      // Record the audio chunks
-      mediaRecorder.ondataavailable = (event) => {
-        audioChunks.push(event.data);
-      };
-
-      mediaRecorder.onstop = () => {
-        // Stop the audio from being played while it's still recording
-        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-        const audioUrl = URL.createObjectURL(audioBlob);
-        const audio = new Audio(audioUrl);
-
-        // Play the audio only after the recording is stopped
-        audio.oncanplaythrough = () => {
-          audio.play();  // Only play when the audio is ready
-        };
-      };
-
-      // Start recording
-      mediaRecorder.start();
-      isRecording = true;
-
-      // Update the UI for recording state
-      microphoneIcon.classList.add('active');
-      recordingPanel.classList.add('active');
-      stopRecordingBtn.style.display = 'block'; // Show the Stop Recording button
-    } catch (error) {
-      console.error('Error accessing microphone:', error);
-    }
-  }
-
-  // Function to stop recording
-  function stopRecording() {
-    mediaRecorder.stop();
-    isRecording = false;
-
-    // Update the UI for stopping recording
-    microphoneIcon.classList.remove('active');
-    recordingPanel.classList.remove('active');
-    stopRecordingBtn.style.display = 'none'; // Hide the Stop Recording button
-  }
-
-  // Attach file event listener to open file explorer
-  attachmentIcon.addEventListener('click', () => {
-    fileInput.click(); // Trigger the file input on click
-  });
-
-  // Handle file input change (user selects a file)
-  fileInput.addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Display the image message
-      const fileMessage = `File received: ${file.name}`;
-      chatMessages.innerHTML += `<div class="message received">${fileMessage}</div>`;
-
-      // Create an image display box
-      const imageContainer = document.createElement('div');
-      imageContainer.classList.add('image-message');
-      const image = document.createElement('img');
-      image.src = URL.createObjectURL(file);
-      image.alt = file.name;
-      imageContainer.appendChild(image);
-
-      chatMessages.appendChild(imageContainer);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-
-      // Prepare the form data and send the file to the backend for prediction
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await fetch("/predict", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (data.predictions) {
-        // Clear previous results in the chat messages
-        let predictionsMessage = "Here are the predictions:\n";
-        for (const [label, percentage] of Object.entries(data.predictions)) {
-          predictionsMessage += `${label}: ${percentage}%\n`;
+        if (data.response) {
+          // Append the response from the chatbot
+          chatMessages.innerHTML += `<div class="message received">${data.response}</div>`;
+        } else {
+          chatMessages.innerHTML += `<div class="message received">Sorry, there was an error processing your message.</div>`;
         }
 
-        // Append the prediction message to the chat box as a received message from the bot
-        chatMessages.innerHTML += `<div class="message received">${predictionsMessage}</div>`;
+        chatMessages.scrollTop = chatMessages.scrollHeight;  // Scroll to the bottom of the chat
+      }
+    });
 
-        // Scroll to the bottom to show the new message
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      } else {
-        alert('Error in prediction.');
+    // Start recording when microphone icon is clicked
+    microphoneIcon.addEventListener('click', async () => {
+      if (!isRecording) {
+        startRecording();
+      }
+    });
+
+    // Stop recording when Stop button is clicked
+    stopRecordingBtn.addEventListener('click', stopRecording);
+
+    // Function to start recording
+    async function startRecording() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+
+        // Record the audio chunks
+        mediaRecorder.ondataavailable = (event) => {
+          audioChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          // Stop the audio from being played while it's still recording
+          const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+          const audioUrl = URL.createObjectURL(audioBlob);
+          const audio = new Audio(audioUrl);
+
+          // Play the audio only after the recording is stopped
+          audio.oncanplaythrough = () => {
+            audio.play();  // Only play when the audio is ready
+          };
+        };
+
+        // Start recording
+        mediaRecorder.start();
+        isRecording = true;
+
+        // Update the UI for recording state
+        microphoneIcon.classList.add('active');
+        recordingPanel.classList.add('active');
+        stopRecordingBtn.style.display = 'block'; // Show the Stop Recording button
+      } catch (error) {
+        console.error('Error accessing microphone:', error);
       }
     }
-  });
 
-  let selectedLanguage = 'en';  // Default language to English
+    // Function to stop recording
+    function stopRecording() {
+      mediaRecorder.stop();
+      isRecording = false;
 
-  // Handle language selection
-  document.querySelectorAll('.dropdown-content a').forEach(item => {
-    item.addEventListener('click', async (e) => {
-      e.preventDefault();
-      selectedLanguage = e.target.getAttribute('data-language');
-
-      // Send language choice to the backend (Flask)
-      await fetch('/set_language', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ language: selectedLanguage })
-      });
-    });
-  });
-
-  // Start recording when microphone icon is clicked
-  document.getElementById('microphone-icon').addEventListener('click', async () => {
-    // Call the Flask backend to start speech recognition and return the result
-    const response = await fetch('/recognize_speech', { method: 'POST' });
-    const data = await response.json();
-
-    if (data.text) {
-      // Display the recognized text in the message input
-      document.getElementById('message-input').value = data.text;
-    } else {
-      alert(data.error);
+      // Update the UI for stopping recording
+      microphoneIcon.classList.remove('active');
+      recordingPanel.classList.remove('active');
+      stopRecordingBtn.style.display = 'none'; // Hide the Stop Recording button
     }
-  });
-</script>
 
+    // Attach file event listener to open file explorer
+    attachmentIcon.addEventListener('click', () => {
+      fileInput.click(); // Trigger the file input on click
+    });
+
+    // Handle file input change (user selects a file)
+    fileInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        // Display the image message
+        const fileMessage = `File received: ${file.name}`;
+        chatMessages.innerHTML += `<div class="message received">${fileMessage}</div>`;
+
+        // Create an image display box
+        const imageContainer = document.createElement('div');
+        imageContainer.classList.add('image-message');
+        const image = document.createElement('img');
+        image.src = URL.createObjectURL(file);
+        image.alt = file.name;
+        imageContainer.appendChild(image);
+
+        chatMessages.appendChild(imageContainer);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // Prepare the form data and send the file to the backend for prediction
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await fetch("/predict", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await response.json();
+
+        if (data.predictions) {
+          // Clear previous results in the chat messages
+          let predictionsMessage = "Here are the predictions:\n";
+          for (const [label, percentage] of Object.entries(data.predictions)) {
+            predictionsMessage += `${label}: ${percentage}%\n`;
+          }
+
+          // Append the prediction message to the chat box as a received message from the bot
+          chatMessages.innerHTML += `<div class="message received">${predictionsMessage}</div>`;
+
+          // Scroll to the bottom to show the new message
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        } else {
+          alert('Error in prediction.');
+        }
+      }
+    });
+
+      document.getElementById("reasoning-btn").addEventListener("click", function() {
+    window.location.href = "{{ url_for('try_page') }}";
+  });
+  </script>
 </body>
 </html>

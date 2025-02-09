@@ -9,6 +9,7 @@ import numpy as np
 from PIL import Image
 import aiml  # Import AIML module
 import pandas as pd
+import random
 import spacy
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -16,11 +17,21 @@ import string
 import torch
 from transformers import BertTokenizer, BertModel
 import numpy as np
+# Import your game functions from game.py
+from game import ask_questions, guess_gem, correct_spelling
+import re
+import os
+from nltk.sem.logic import Expression
+from reasoning import process_know_not_command,process_check_command,process_know_command,load_kb
 
 # Initialize Flask app
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Used for session management
+read_expr = Expression.fromstring
+# Define your knowledge base file path.
+kb_file_path = r"C:\Users\imadt\my_ChatBot\gemstones_CHATBot\data\kb.txt"
 
+# ------------------- Gemstone Prediction Model -------------------
 # Load the trained model for gemstone prediction
 model = load_model(r'C:\Users\imadt\my_ChatBot\gemstones_CHATBot\models\gemstone_model.h5')
 
@@ -28,44 +39,35 @@ model = load_model(r'C:\Users\imadt\my_ChatBot\gemstones_CHATBot\models\gemstone
 class_labels = ['Amethyst', 'Diamond', 'Emerald', 'Lapis Lazuli', 'Opal', 'Pearl', 'Quartz Smoky', 'Ruby',
                 'Sapphire Yellow', 'Topaz']
 
-# Initialize recognizer and translator for speech-to-text
+# ------------------- Speech Recognition and Translation -------------------
 recognizer = sr.Recognizer()
 translator = Translator()
 
-# Create the AIML kernel
+# ------------------- AIML Chatbot -------------------
 kernel = aiml.Kernel()
-kernel.learn("C:/Users/imadt/my_ChatBot/gemstones_CHATBot/aiml_files/gemstones.aiml")
+kernel.learn(r"C:\Users\imadt\my_ChatBot\gemstones_CHATBot\aiml_files\gemstones.aiml")
 
-# Load spaCy for lemmatization
+# ------------------- spaCy, TF-IDF, and BERT Setup -------------------
 nlp = spacy.load("en_core_web_sm")
-
-# Load BERT tokenizer and model
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 bert_model = BertModel.from_pretrained('bert-base-uncased')
 
-# Load CSV file for try.py responses
 df = pd.read_csv(r'C:\Users\imadt\my_ChatBot\gemstones_CHATBot\data\gems.csv')
 
 
-# Preprocess the text (tokenization, remove punctuation, stopwords, lemmatization)
 def preprocess_text(text):
     text = text.translate(str.maketrans("", "", string.punctuation + "0123456789"))
-    doc = nlp(text.lower())  # Convert to lowercase and tokenize
-    lemmatized_text = " ".join([token.lemma_ for token in doc if not token.is_stop])  # Remove stopwords
+    doc = nlp(text.lower())
+    lemmatized_text = " ".join([token.lemma_ for token in doc if not token.is_stop])
     return lemmatized_text
 
 
-# Apply preprocessing to the questions in your CSV
 df['processed_question'] = df['question'].apply(preprocess_text)
 
-# Initialize the TF-IDF Vectorizer with additional parameters
 vectorizer = TfidfVectorizer(max_features=5000, ngram_range=(1, 2), stop_words='english')
-
-# Fit the TF-IDF model on the processed questions
 tfidf_matrix = vectorizer.fit_transform(df['processed_question'])
 
 
-# Function to get BERT embeddings
 def get_bert_embeddings(text):
     inputs = tokenizer(text, return_tensors='pt', truncation=True, padding=True, max_length=512)
     with torch.no_grad():
@@ -74,7 +76,6 @@ def get_bert_embeddings(text):
     return embeddings.squeeze().numpy()
 
 
-# Function to get response based on TF-IDF
 def get_response_tfidf(user_input):
     processed_input = preprocess_text(user_input)
     user_input_tfidf = vectorizer.transform([processed_input])
@@ -88,7 +89,6 @@ def get_response_tfidf(user_input):
         return "Sorry, I didn't understand that. Can you please ask something else?", 0
 
 
-# Function to get response based on BERT embeddings
 def get_response_bert(user_input):
     user_input_embeddings = get_bert_embeddings(user_input)
     question_embeddings = np.array([get_bert_embeddings(q) for q in df['processed_question']])
@@ -101,6 +101,8 @@ def get_response_bert(user_input):
     else:
         return "Sorry, I didn't understand that. Can you please ask something else?", 0
 
+
+# ------------------- Routes -------------------
 
 @app.route('/')
 def index():
@@ -118,24 +120,18 @@ def set_language():
 def recognize_speech():
     if 'language' not in session:
         return jsonify(error="Language not set.")
-
     language_code = session['language']
-
     with sr.Microphone() as source:
         print(f"Listening for speech in {language_code}...")
         recognizer.adjust_for_ambient_noise(source)
         audio = recognizer.listen(source)
-
         try:
             user_input = recognizer.recognize_google(audio, language=language_code)
             print(f"Recognized speech: {user_input}")
-
             detected_language = detect(user_input)
             if detected_language != 'en':
                 user_input = translator.translate(user_input, src=detected_language, dest='en').text
-
             return jsonify(text=user_input)
-
         except sr.UnknownValueError:
             return jsonify(error="Sorry, I couldn't understand that.")
         except sr.RequestError:
@@ -146,53 +142,183 @@ def recognize_speech():
 def predict():
     if 'file' not in request.files:
         return jsonify({"error": "No file part"})
-
     file = request.files['file']
     if file.filename == '':
         return jsonify({"error": "No selected file"})
-
     if file:
         img = Image.open(file)
         img = img.resize((224, 224))
         img_array = np.array(img) / 255.0
         img_array = np.expand_dims(img_array, axis=0)
-
         predictions = model.predict(img_array)
         percentages = predictions[0] * 100
         result = {class_labels[i]: round(float(percentages[i]), 2) for i in range(len(class_labels))}
-
         return jsonify({"predictions": result})
 
 
-# New route to handle AIML chatbot responses
 @app.route("/chat", methods=['POST'])
 def chat():
-    user_message = request.json.get('message')  # Get the message from the user
-
+    user_message = request.json.get('message')
     if user_message:
-        # Get the response from the AIML engine
-        response = kernel.respond(user_message.upper())  # Ensure we use uppercase for AIML matching
-
-        # Debugging: Log AIML response
+        response = kernel.respond(user_message.upper())
         print(f"AIML response: {response}")
-
-        # Check if the AIML response is valid (non-empty, non-generic)
         if not response or "I didn't quite catch that" in response or "I don't know" in response:
-            # If AIML doesn't give a proper response, use TF-IDF and BERT fallback
             response_tfidf, similarity_tfidf = get_response_tfidf(user_message)
             response_bert, similarity_bert = get_response_bert(user_message)
-
-            # Compare the similarity percentage between TF-IDF and BERT
             if similarity_bert > similarity_tfidf:
                 response = response_bert
             else:
                 response = response_tfidf
-
-        # Return the final response to the user
         return jsonify({"response": response})
-
     return jsonify({"error": "No message provided."})
 
+
+# ------------------- Interactive Chat Game (Guess the Gem) -------------------
+# We'll store active game generator instances here keyed by a unique game id.
+games = {}
+
+
+def game_generator():
+    # Welcome messages (as in your console game)
+    yield "Welcome to 'Guess the Gem'!"
+    yield "Please think of a gemstone from the following list:"
+    yield "Amethyst, Diamond, Emerald, Opal, Ruby, Sapphire"
+
+    # Define options and questions (matching your ask_questions function)
+    colors = ['Purple', 'Clear', 'Green', 'Multicolor', 'Red', 'Blue']
+    origins = ['Brazil', 'South Africa', 'Colombia', 'Australia', 'Myanmar', 'Sri Lanka']
+    clarity = ['Clear', 'Opaque']
+    questions = [
+        "What color is your gemstone? (Options: Purple, Clear, Green, Multicolor, Red, Blue)",
+        "How hard is your gemstone? (Enter the hardness on a scale of 1 to 10, with 10 being the hardest)",
+        "Where is your gemstone from? (Options: Brazil, South Africa, Colombia, Australia, Myanmar, Sri Lanka)",
+        "What is the clarity of your gemstone? (Options: Clear, Opaque)"
+    ]
+    user_answers = []
+
+    # For each question, yield the question then wait for an answer.
+    for i, q in enumerate(questions):
+        yield q
+        answer = yield "Your answer:"  # Pause for input.
+
+        # If the user types "i don't know", ask a backup question.
+        if answer.lower() == "i don't know":
+            backup_questions = [
+                "Can you describe the gemstone's texture? (e.g., smooth, rough, shiny, matte)",
+                "What is the gemstone's shape? (e.g., round, oval, square, heart-shaped)",
+                "Does the gemstone have any special markings or patterns? (e.g., stripes, speckles, plain)",
+                "Is the gemstone translucent or opaque?",
+                "What is the gemstone's size? (e.g., small, medium, large)"
+            ]
+            backup_q = random.choice(backup_questions)
+            yield backup_q
+            answer = yield "Your answer:"  # Get backup answer.
+
+        # Process the answer as in your original game logic.
+        if i == 0:
+            answer = correct_spelling(answer, colors)
+        elif i == 1:
+            try:
+                answer = int(answer)
+            except ValueError:
+                answer = 5  # Fallback default.
+        elif i == 2:
+            answer = correct_spelling(answer, origins)
+        elif i == 3:
+            answer = correct_spelling(answer, clarity)
+
+        yield f"Did you mean: {answer}?"
+        user_answers.append(answer)
+
+    # Use guessing logic.
+    guessed_gem, match_score = guess_gem(user_answers)
+    yield f"My guess is: {guessed_gem}"
+    yield f"Match confidence (fuzziness): {match_score * 100}%"
+    yield "Is this correct? (yes/no)"
+    response = yield "Your answer:"  # Wait for confirmation.
+    if response.lower() == "yes":
+        yield "Hooray! I guessed it right!"
+    else:
+        yield "Oops! Let's start again."
+    yield "Do you want to play again? (yes/no)"
+    play_again = yield "Your answer:"
+    if play_again.lower() == "yes":
+        yield "Restarting game..."
+        # (Here you might reinitialize a new game instance.)
+    else:
+        yield "Thanks for playing!"
+
+
+@app.route('/play_game')
+def play_game():
+    # When a user visits /play_game, create a new game generator instance.
+    from uuid import uuid4
+    game_id = str(uuid4())
+    gen = game_generator()
+    games[game_id] = gen
+    messages = []
+    try:
+        # Prime the generator to get the first message.
+        msg = next(gen)
+        messages.append(msg)
+    except StopIteration:
+        pass
+    return render_template("game.html", game_id=game_id, messages=messages)
+
+
+@app.route('/next', methods=['POST'])
+def next_message():
+    game_id = request.form.get("game_id")
+    user_input = request.form.get("user_input")
+    if game_id not in games:
+        return jsonify({"messages": ["Game not found."]})
+
+    gen = games[game_id]
+    messages = []
+    try:
+        # Send the user's input into the generator.
+        msg = gen.send(user_input)
+        messages.append(msg)
+        # Continue reading from the generator until a "Your answer:" prompt is reached.
+        while True:
+            msg = next(gen)
+            messages.append(msg)
+            if msg == "Your answer:":
+                break
+    except StopIteration:
+        # End of game; remove the game instance.
+        del games[game_id]
+    except Exception as e:
+        messages.append("Error: " + str(e))
+    return jsonify({"messages": messages})
+
+
+@app.route('/process_command', methods=['POST'])
+def process_command():
+    user_input = request.json.get("command")
+    if not user_input:
+        return jsonify({"error": "No command provided"}), 400
+
+    kb = load_kb()
+
+    if user_input.startswith("I know that"):
+        if " is not " in user_input:
+            response = process_know_not_command(user_input, kb)
+        else:
+            response = process_know_command(user_input, kb)
+    elif user_input.startswith("Check that"):
+        response = process_check_command(user_input, kb)
+    else:
+        response = ("Command not recognized. Please use 'I know that X is Y', " +
+                    "'I know that X is not Y', or 'Check that X is Y'.")
+
+    return jsonify({"response": response})
+
+@app.route('/try')
+def try_page():
+    return render_template('try.html')
+
+# ------------------- End of Routes -------------------
 
 if __name__ == "__main__":
     app.run(debug=True)

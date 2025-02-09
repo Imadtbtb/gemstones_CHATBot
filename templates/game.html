@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guess the Gem Chat Game</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* Global Reset and Font */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      /* Updated background gradient */
+      background: linear-gradient(135deg, #25d366, #075e54);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+      overflow: hidden; /* Ensure falling gems don't show scrollbars */
+    }
+
+    /* Gem Container for Falling Gems */
+    #gem-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none; /* So the gems don’t interfere with clicking */
+      z-index: 9999;
+    }
+
+    .gem {
+      position: absolute;
+      top: -50px;
+      /* We'll animate these falling */
+      font-size: 24px;
+      opacity: 0.9;
+      animation: fall 4s linear forwards;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Chat Container */
+    .chat-container {
+      background: #ffffff;
+      width: 100%;
+      max-width: 600px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      z-index: 2; /* Above falling gems */
+    }
+
+    /* Header */
+    .chat-header {
+      background: #075e54; /* Dominant color */
+      padding: 20px;
+      text-align: center;
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+
+    /* Chat Messages */
+    .chat-messages {
+      flex: 1;
+      padding: 20px;
+      background: #ecf0f1;
+      overflow-y: auto;  /* Enable vertical scrolling */
+      max-height: 400px; /* Set max height for the chat container */
+    }
+
+    .message {
+      margin-bottom: 15px;
+      padding: 12px 16px;
+      border-radius: 20px;
+      line-height: 1.4;
+      max-width: 80%;
+      word-wrap: break-word;
+    }
+
+    /* Server messages (from the game) */
+    .message.server {
+      background: #dfe6e9;
+      align-self: flex-start;
+      border-bottom-left-radius: 0;
+    }
+
+    /* User messages (answers entered) */
+    .message.user {
+      background: #74b9ff;
+      color: #fff;
+      align-self: flex-end;
+      border-bottom-right-radius: 0;
+    }
+
+    /* Chat Input */
+    .chat-input {
+      display: flex;
+      padding: 15px;
+      border-top: 1px solid #ddd;
+      background: #fafafa;
+    }
+
+    .chat-input input[type="text"] {
+      flex: 1;
+      padding: 10px 15px;
+      border: 1px solid #ccc;
+      border-radius: 30px;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .chat-input button {
+      background: #075e54; /* Dominant color for button */
+      border: none;
+      padding: 10px 20px;
+      margin-left: 10px;
+      color: #fff;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+    }
+
+    .chat-input button:hover {
+      background: #064d46;
+    }
+  </style>
+</head>
+<body>
+  <!-- Gem Container for Falling Gems -->
+  <div id="gem-container"></div>
+
+  <div class="chat-container">
+    <!-- Header -->
+    <div class="chat-header">
+      Guess the Gem Game
+    </div>
+    <!-- Chat Messages -->
+    <div class="chat-messages" id="chat-messages">
+      <!-- Preloaded messages from server -->
+      {% for msg in messages %}
+      <div class="message server">{{ msg }}</div>
+      {% endfor %}
+    </div>
+    <!-- Chat Input -->
+    <div class="chat-input">
+      <input type="hidden" id="game_id" name="game_id" value="{{ game_id }}">
+      <input type="text" id="user_input" name="user_input" placeholder="Type your answer here..." autocomplete="off" required>
+      <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+
+  <script>
+    // ---------------- Falling Gems Effect ----------------
+    function createFallingGems() {
+      const gemContainer = document.getElementById('gem-container');
+      const gemCount = 30; // Number of gems to create
+      // Predefined gem colors (you can add more if desired)
+      const gemColors = ['#a4508b', '#5f0a87', '#56ab2f', '#a8e063', '#cb2d3e', '#ef473a', '#396afc', '#2948ff'];
+
+      for (let i = 0; i < gemCount; i++) {
+        const gem = document.createElement('div');
+        gem.classList.add('gem');
+        // Use FontAwesome gem icon (ensure FontAwesome is loaded)
+        gem.innerHTML = '<i class="fas fa-gem"></i>';
+        // Set random horizontal position (0% to 100%)
+        gem.style.left = Math.random() * 100 + '%';
+        // Randomize font size for variation
+        gem.style.fontSize = (Math.random() * 16 + 16) + 'px'; // 16px to 32px
+        // Choose a random color from gemColors
+        gem.style.color = gemColors[Math.floor(Math.random() * gemColors.length)];
+        // Add a random animation delay between 0 and 0.5 seconds
+        gem.style.animationDelay = Math.random() * 0.5 + 's';
+        gemContainer.appendChild(gem);
+      }
+
+      // Remove gem container after 4.5 seconds to ensure the effect lasts ~4 seconds
+      setTimeout(() => {
+        gemContainer.parentNode.removeChild(gemContainer);
+      }, 4500);
+    }
+
+    // Trigger falling gems effect when the page loads
+    window.addEventListener('load', createFallingGems);
+
+    // ---------------- Chat Functionality ----------------
+    const sendButton = document.getElementById("send-btn");
+    const userInputField = document.getElementById("user_input");
+    const chatMessages = document.getElementById("chat-messages");
+    let colorChosen = false; // Flag for when the color question is answered
+
+    // Function to append a message to the chat
+    function appendMessage(text, sender) {
+      const msgDiv = document.createElement("div");
+      msgDiv.classList.add("message", sender);
+      msgDiv.innerText = text;
+      chatMessages.appendChild(msgDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Function to update the chat header's gradient based on the chosen gemstone color
+    function updateGradientColor(chosenColor) {
+      const colorGradients = {
+        "purple": "linear-gradient(135deg, #a4508b, #5f0a87)",
+        "green": "linear-gradient(135deg, #56ab2f, #a8e063)",
+        "red": "linear-gradient(135deg, #cb2d3e, #ef473a)",
+        "blue": "linear-gradient(135deg, #396afc, #2948ff)",
+        "multicolor": "linear-gradient(135deg, #f093fb, #f5576c)",
+        "clear": "linear-gradient(135deg, #ffffff, #e0e0e0)"
+      };
+      const lowerColor = chosenColor.toLowerCase().trim();
+      let gradient = colorGradients[lowerColor] || "linear-gradient(135deg, #075e54, #25d366)"; // Fallback gradient if not matched
+      // Update the chat header background with the new gradient
+      const chatHeader = document.querySelector('.chat-header');
+      chatHeader.style.background = gradient;
+    }
+
+    // Function to send user input to the server and process response messages
+    function sendMessage() {
+      const gameId = document.getElementById("game_id").value;
+      const userInput = userInputField.value.trim();
+      if (!userInput) return;
+
+      // If the color question hasn't been answered yet, assume this answer is for the color question.
+      if (!colorChosen) {
+        updateGradientColor(userInput);
+        colorChosen = true;
+      }
+
+      // Append user's message to chat
+      appendMessage("Your answer: " + userInput, "user");
+      userInputField.value = "";
+
+      // Send AJAX POST request to /next
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "/next");
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          const data = JSON.parse(xhr.responseText);
+          data.messages.forEach(msg => {
+            appendMessage(msg, "server");
+          });
+        }
+      };
+      xhr.send("game_id=" + encodeURIComponent(gameId) + "&user_input=" + encodeURIComponent(userInput));
+    }
+
+    // Send message on button click
+    sendButton.addEventListener("click", function(e) {
+      e.preventDefault();
+      sendMessage();
+    });
+
+    // Allow sending message on Enter key press
+    userInputField.addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  </script>
+</body>
+</html>
