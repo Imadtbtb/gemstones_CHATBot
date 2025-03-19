@@ -92,6 +92,9 @@
     <a href="{{ url_for('play_game') }}">
       <button class="game-button">Go to Game</button>
     </a>
+    <a href="{{ url_for('game2') }}">
+      <button class="game-button">Go to Game 2</button>
+    </a>
 
   </div>
 
@@ -277,6 +280,49 @@
       document.getElementById("reasoning-btn").addEventListener("click", function() {
     window.location.href = "{{ url_for('try_page') }}";
   });
+ let selectedLanguage = 'en';  // Default language to English
+
+// Handle language selection
+document.querySelectorAll('.dropdown-content a').forEach(item => {
+  item.addEventListener('click', async (e) => {
+    e.preventDefault();
+
+    // Update the selected language when the user selects a new language
+    selectedLanguage = e.target.getAttribute('data-language');
+
+    // Send the selected language to the backend (Flask)
+    const response = await fetch('/set_language', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ language: selectedLanguage }),
+    });
+
+    const data = await response.json();
+
+    // Check if the language was successfully set
+    if (data.success) {
+      console.log(`Language set to: ${selectedLanguage}`);
+    } else {
+      console.error('Failed to set language.');
+    }
+  });
+});
+
+// Start recording when microphone icon is clicked
+document.getElementById('microphone-icon').addEventListener('click', async () => {
+  // Call the Flask backend to start speech recognition and return the result
+  const response = await fetch('/recognize_speech', { method: 'POST' });
+  const data = await response.json();
+
+  if (data.text) {
+    // Display the recognized text in the message input
+    document.getElementById('message-input').value = data.text;
+  } else {
+    alert(data.error);
+  }
+});
   </script>
 </body>
 </html>
