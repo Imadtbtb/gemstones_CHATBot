@@ -3,10 +3,8 @@ import os
 from nltk.sem.logic import Expression
 from nltk.inference import ResolutionProver
 
-# Create a shortcut to the expression parser.
 read_expr = Expression.fromstring
 
-# Define your knowledge base file path.
 kb_file_path = r"C:\Users\imadt\my_ChatBot\gemstones_CHATBot\data\kb.txt"
 
 
@@ -100,7 +98,7 @@ def process_know_command(command, kb):
         fact_expr = read_expr(fact_str)
     except Exception as e:
         return f"Error parsing the fact: {fact_str}. {e}"
-    # Check for contradiction: if the negated fact exists.
+    # Check for contradiction if the negated fact exists.
     try:
         neg_fact_expr = read_expr("~" + fact_str)
         if neg_fact_expr in kb:
@@ -137,7 +135,7 @@ def process_know_not_command(command, kb):
         neg_fact_expr = read_expr(neg_fact_str)
     except Exception as e:
         return f"Error parsing the fact: {neg_fact_str}. {e}"
-    # Check for contradiction: if the positive fact exists.
+    # Check for contradiction if the positive fact exists.
     try:
         pos_fact_expr = read_expr(fact_str)
         if pos_fact_expr in kb:
@@ -175,7 +173,7 @@ def process_check_command(command, kb):
         return f"Error parsing the fact: {fact_str}. {e}"
 
     premises = list(kb)
-    # Use ResolutionProver for resolution-based inference.
+
     if entails(fact_expr, premises):
         return "Correct"
     elif entails(neg_fact_expr, premises):

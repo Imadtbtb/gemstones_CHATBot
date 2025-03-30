@@ -276,17 +276,16 @@ def next_message():
     gen = games[game_id]
     messages = []
     try:
-        # Send the user's input into the generator.
         msg = gen.send(user_input)
         messages.append(msg)
-        # Continue reading from the generator until a "Your answer:" prompt is reached.
+
         while True:
             msg = next(gen)
             messages.append(msg)
             if msg == "Your answer:":
                 break
     except StopIteration:
-        # End of game; remove the game instance.
+
         del games[game_id]
     except Exception as e:
         messages.append("Error: " + str(e))
@@ -437,7 +436,7 @@ def run_the_game():
 
 
 
-# ------------------- End of Routes -------------------
+# ------------------- Endd of Routes -------------------
 
 if __name__ == "__main__":
     app.run(debug=True)
